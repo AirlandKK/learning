@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>三种模式及搭建 - AirlandKK&#x27;学习笔记</title>
+        <title>Hadoop - AirlandKK&#x27;学习笔记</title>
 
 
         <!-- Custom HTML head -->
@@ -83,7 +83,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="../../algorithm/about.html"><strong aria-hidden="true">1.</strong> 数据结构与算法</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../algorithm/inear_structure/algorithmAbout.html"><strong aria-hidden="true">1.1.</strong> 线性结构</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../algorithm/inear_structure/list.html"><strong aria-hidden="true">1.1.1.</strong> 线性结构</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="../../bigData/about.html"><strong aria-hidden="true">2.</strong> 大数据</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../bigData/linux/aboutlinux.html"><strong aria-hidden="true">2.1.</strong> Linux</a></li><li class="chapter-item expanded "><a href="../../bigData/Hadoop/hadoop概述.html"><strong aria-hidden="true">2.2.</strong> Hadoop</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../bigData/Hadoop/三种模式及搭建.html" class="active"><strong aria-hidden="true">2.2.1.</strong> 三种模式及搭建</a></li></ol></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../../algorithm/about.html"><strong aria-hidden="true">1.</strong> 数据结构与算法</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../algorithm/inear_structure/algorithmAbout.html"><strong aria-hidden="true">1.1.</strong> 线性结构</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../algorithm/inear_structure/list.html"><strong aria-hidden="true">1.1.1.</strong> 线性结构</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="../../bigData/about.html"><strong aria-hidden="true">2.</strong> 大数据</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../bigData/linux/aboutlinux.html"><strong aria-hidden="true">2.1.</strong> Linux</a></li><li class="chapter-item expanded "><a href="../../bigData/Hadoop/hadoopabout.html" class="active"><strong aria-hidden="true">2.2.</strong> Hadoop</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../bigData/Hadoop/typeandbuild.html"><strong aria-hidden="true">2.2.1.</strong> 三种模式及搭建</a></li></ol></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -144,59 +144,88 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="单机模式-stonealone"><a class="header" href="#单机模式-stonealone">单机模式 stonealone</a></h1>
+                        <h1 id="hadoop1x和hadoop2x区别"><a class="header" href="#hadoop1x和hadoop2x区别">Hadoop1.x和Hadoop2.x区别</a></h1>
 <ul>
-<li>grep案例</li>
-<li>WordCount案例</li>
-</ul>
-<h1 id="伪分布式模式"><a class="header" href="#伪分布式模式">伪分布式模式</a></h1>
+<li>Hadoop1.x组成
 <ul>
-<li>所有配置都是按照分布式来的</li>
-<li>但是只有一台服务器</li>
+<li>MapReduce（计算+资源调度）</li>
+<li>HDFS（数据存储）</li>
+<li>Common（辅助工具）</li>
 </ul>
-<h1 id="虚拟机环境准备"><a class="header" href="#虚拟机环境准备">虚拟机环境准备</a></h1>
-<pre><code class="language-shell">vim /etc/udev/rules.d/70-persistent-net.rules //修改最后为eth0
-vim /etc/sysconfig/network-scripts/ifcfg-eth0 
-
-</code></pre>
-<p>https://juejin.cn/post/6991352348471722014#heading-18</p>
-<p>https://juejin.cn/post/6844904114980126734#heading-1</p>
-<pre><code class="language-shell"># 设置环境变量
-$ vim /etc/profile
-# 进入之后在文件末尾追加如下内容：
-#java
-export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk
-export JRE_HOME=${JAVA_HOME}/jre    
-export CLASSPATH=.:${JAVA_HOME}/lib:${JRE_HOME}/lib    
-export PATH=${JAVA_HOME}/bin:$PATH
-#hadoop
-export HADOOP_HOME=/opt/software/hadoop-3.3.1
-export PATH=$PATH:$HADOOP_HOME/bin
-export PATH=$PATH:$HADOOP_HOME/sbin
-export HADOOP_MAPRED_HOME=$HADOOP_HOME
-export HADOOP_COMMON_HOME=$HADOOP_HOME
-export HADOOP_HDFS_HOME=$HADOOP_HOME
-export YARN_HOME=$HADOOP_HOME
-export HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_HOME/lib/native
-export HADOOP_OPTS=&quot;-Djava.library.path=$HADOOP_HOME/lib&quot;
-export JAVA_LIBRARY_PATH=$HADOOP_HOME/lib/native:$JAVA_LIBRARY_PATH
-# 使环境变量生效
-$ source /etc/profile
-
-	&lt;property&gt;
-        &lt;name&gt;hadoop.tmp.dir&lt;/name&gt;
-        &lt;value&gt;/opt/software/hadoop-3.3.1/data/tmp&lt;/value&gt;
-    &lt;/property&gt;
-</code></pre>
+</li>
+<li>Hdoop2.x组成
+<ul>
+<li>MapReduce（计算）</li>
+<li><strong>Yarn（资源调度）</strong></li>
+<li>HDFS（数据存储）</li>
+<li>Common（辅助工具）</li>
+</ul>
+</li>
+</ul>
+<p>在Hadoop1.X时代，Hadoop中的MapRudece同时处理业务逻辑运算和资源的调度，耦合性较大，在Hadoop2.X时代，增加了Yarn。Yarn只负责资源的调度，MapReduce只负责运算。</p>
+<h1 id="hdfs架构概述"><a class="header" href="#hdfs架构概述">HDFS架构概述</a></h1>
+<ul>
+<li><strong>NameNode（nn）</strong>-类似目录：存储文件的元数据，如文件名，文件目录结构，文件属性（生成时间、副本数、文件权限），以及每个文件的块列表和块所在的DataNode等。</li>
+<li><strong>DataNode（dn）</strong>-类似真正存储的数据：在本地文件系统存储文件块数据，以及块数据的校验和。</li>
+<li>Secondary NameNode（2nn）：用来监控HDFS状态的辅助后台程序，每隔一段时间获取HDFS元数据的快照。</li>
+</ul>
+<h1 id="yarn架构概述"><a class="header" href="#yarn架构概述">YARN架构概述</a></h1>
+<ol>
+<li><strong>ResourceManager（RM）主要作用如下</strong>
+<ol>
+<li>处理客户端请求</li>
+<li>监控NodeManager</li>
+<li>启动或监控ApplicationMaster</li>
+<li>资源的分配与调度</li>
+</ol>
+</li>
+<li><strong>NodeManager（NM）主要作用如下</strong>
+<ol>
+<li>管理单个节点上的资源</li>
+<li>处理来自ResourceManager的命令</li>
+<li>处理来自ApplicationMaster的命令</li>
+</ol>
+</li>
+<li>ApplicationMaster（AM）作用如下
+<ol>
+<li>负责数据的切分</li>
+<li>为应用程序申请资源并分配给内部的任务</li>
+<li>任务的监控与容错</li>
+</ol>
+</li>
+<li>Container
+<ol>
+<li>Container是YARN中资源抽象，它封住了某个节点上的多维度资源，如内存、CPU、磁盘、网络等。</li>
+</ol>
+</li>
+</ol>
+<h1 id="maprudece架构概述"><a class="header" href="#maprudece架构概述">MapRudece架构概述</a></h1>
+<p>MapReduce将计算过程分为两个阶段：Map和Reduce</p>
+<ol>
+<li>Map阶段并行处理输入数据</li>
+<li>Reduce阶段对Map结果进行汇总</li>
+</ol>
+<h1 id="大数据技术生态系统"><a class="header" href="#大数据技术生态系统">大数据技术生态系统</a></h1>
+<table><thead><tr><th>数据来源层</th><th>数据传输层</th><th>数据存储层</th><th>资源管理层</th><th>数据计算层</th><th>任务调度层</th><th>配置和调度</th><th>业务模型层</th></tr></thead><tbody>
+<tr><td>数据库（结构化数据）</td><td>Sqoop数据传递</td><td><strong>HDFS文件存储</strong></td><td>YARN资源管理</td><td>MapReduce<u>离线</u>计算（1. <strong>Hive数据查询</strong>（javaEE）、2. Mahout数据挖掘（算法））</td><td>Oozie任务调度、Azkaban任务调度</td><td>Zookeeper（容易改变的配置信息）</td><td>业务模型、数据库可视化、业务应用</td></tr>
+<tr><td>文件日志（半结构化数据）</td><td>Flume日志收集</td><td><strong>HDFS文件存储</strong>/HBase非关系型数据库</td><td>YARN资源管理</td><td>Spark Core内存计算 （<u>离线</u>1. Spark Mlib数据挖掘、2.Spark R数据分析、3.Spark Sql数据查询；<u>准实时批处理</u>Spark Streaming实时计算）/Flink 流处理</td><td>Oozie任务调度、Azkaban任务调度</td><td>Zookeeper（容易改变的配置信息）</td><td>业务模型、数据库可视化、业务应用</td></tr>
+<tr><td>视频、ppt等（非结构化数据）</td><td>Kafka消息队列</td><td>Kafka缓存一些数据</td><td></td><td></td><td></td><td>Zookeeper（容易改变的配置信息）</td><td>业务模型、数据库可视化、业务应用</td></tr>
+</tbody></table>
+<p><img src="img/image-20211226125619030.png" alt="image-大数据技术生态系统" /></p>
+<h1 id="推荐系统项目框架"><a class="header" href="#推荐系统项目框架">推荐系统项目框架</a></h1>
+<p><img src="img/image-20211226132415451.png" alt="image-推荐系统" /></p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../../bigData/Hadoop/hadoop概述.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../../bigData/linux/aboutlinux.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
+                            <a rel="next" href="../../bigData/Hadoop/typeandbuild.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
 
                         <div style="clear: both"></div>
                     </nav>
@@ -204,10 +233,13 @@ $ source /etc/profile
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../../bigData/Hadoop/hadoop概述.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../../bigData/linux/aboutlinux.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
+                    <a rel="next" href="../../bigData/Hadoop/typeandbuild.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
             </nav>
 
         </div>
