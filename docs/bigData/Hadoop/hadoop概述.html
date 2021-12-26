@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>线性结构 - AirlandKK&#x27;学习笔记</title>
+        <title>Hadoop - AirlandKK&#x27;学习笔记</title>
 
 
         <!-- Custom HTML head -->
@@ -83,7 +83,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="../../algorithm/about.html"><strong aria-hidden="true">1.</strong> 数据结构与算法</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../algorithm/inear_structure/algorithmAbout.html" class="active"><strong aria-hidden="true">1.1.</strong> 线性结构</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../algorithm/inear_structure/list.html"><strong aria-hidden="true">1.1.1.</strong> 线性结构</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="../../bigData/about.html"><strong aria-hidden="true">2.</strong> 大数据</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../bigData/linux/aboutlinux.html"><strong aria-hidden="true">2.1.</strong> Linux</a></li><li class="chapter-item expanded "><a href="../../bigData/Hadoop/hadoop概述.html"><strong aria-hidden="true">2.2.</strong> Hadoop</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../bigData/Hadoop/三种模式及搭建.html"><strong aria-hidden="true">2.2.1.</strong> 三种模式及搭建</a></li></ol></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../../algorithm/about.html"><strong aria-hidden="true">1.</strong> 数据结构与算法</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../algorithm/inear_structure/algorithmAbout.html"><strong aria-hidden="true">1.1.</strong> 线性结构</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../algorithm/inear_structure/list.html"><strong aria-hidden="true">1.1.1.</strong> 线性结构</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="../../bigData/about.html"><strong aria-hidden="true">2.</strong> 大数据</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../bigData/linux/aboutlinux.html"><strong aria-hidden="true">2.1.</strong> Linux</a></li><li class="chapter-item expanded "><a href="../../bigData/Hadoop/hadoop概述.html" class="active"><strong aria-hidden="true">2.2.</strong> Hadoop</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../bigData/Hadoop/三种模式及搭建.html"><strong aria-hidden="true">2.2.1.</strong> 三种模式及搭建</a></li></ol></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -144,29 +144,86 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="线性结构"><a class="header" href="#线性结构">线性结构</a></h1>
-<p>线性结构是一个有序数据元素的集合。 常用的线性结构有：线性表，栈，队列，双队列，串(一维数组)。
-关于广义表、数组(高维)，是一种非线性的数据结构。 常见的非线性结构有：二维数组，多维数组，广义表，树(二叉树等)，图</p>
-<h2 id="特征"><a class="header" href="#特征">特征</a></h2>
+                        <h1 id="hadoop1x和hadoop2x区别"><a class="header" href="#hadoop1x和hadoop2x区别">Hadoop1.x和Hadoop2.x区别</a></h1>
+<ul>
+<li>Hadoop1.x组成
+<ul>
+<li>MapReduce（计算+资源调度）</li>
+<li>HDFS（数据存储）</li>
+<li>Common（辅助工具）</li>
+</ul>
+</li>
+<li>Hdoop2.x组成
+<ul>
+<li>MapReduce（计算）</li>
+<li><strong>Yarn（资源调度）</strong></li>
+<li>HDFS（数据存储）</li>
+<li>Common（辅助工具）</li>
+</ul>
+</li>
+</ul>
+<p>在Hadoop1.X时代，Hadoop中的MapRudece同时处理业务逻辑运算和资源的调度，耦合性较大，在Hadoop2.X时代，增加了Yarn。Yarn只负责资源的调度，MapReduce只负责运算。</p>
+<h1 id="hdfs架构概述"><a class="header" href="#hdfs架构概述">HDFS架构概述</a></h1>
+<ul>
+<li><strong>NameNode（nn）</strong>-类似目录：存储文件的元数据，如文件名，文件目录结构，文件属性（生成时间、副本数、文件权限），以及每个文件的块列表和块所在的DataNode等。</li>
+<li><strong>DataNode（dn）</strong>-类似真正存储的数据：在本地文件系统存储文件块数据，以及块数据的校验和。</li>
+<li>Secondary NameNode（2nn）：用来监控HDFS状态的辅助后台程序，每隔一段时间获取HDFS元数据的快照。</li>
+</ul>
+<h1 id="yarn架构概述"><a class="header" href="#yarn架构概述">YARN架构概述</a></h1>
 <ol>
-<li>集合中必存在唯一的一个&quot;第一个元素&quot;；</li>
-<li>集合中必存在唯一的一个&quot;最后的元素&quot;；</li>
-<li>除最后元素之外，其它数据元素均有唯一的&quot;后继&quot;；</li>
-<li>除第一元素之外，其它数据元素均有唯一的&quot;前驱&quot;。
-数据结构中线性结构指的是数据元素之间存在着“一对一”的线性关系的数据结构。<br />
-如（a0,a1,a2,.....,an）,a0为第一个元素，an为最后一个元素，此集合即为一个线性结构的集合。
-相对应于线性结构，非线性结构的逻辑特征是一个结点元素可能对应多个直接前驱和多个后继。</li>
+<li><strong>ResourceManager（RM）主要作用如下</strong>
+<ol>
+<li>处理客户端请求</li>
+<li>监控NodeManager</li>
+<li>启动或监控ApplicationMaster</li>
+<li>资源的分配与调度</li>
 </ol>
+</li>
+<li><strong>NodeManager（NM）主要作用如下</strong>
+<ol>
+<li>管理单个节点上的资源</li>
+<li>处理来自ResourceManager的命令</li>
+<li>处理来自ApplicationMaster的命令</li>
+</ol>
+</li>
+<li>ApplicationMaster（AM）作用如下
+<ol>
+<li>负责数据的切分</li>
+<li>为应用程序申请资源并分配给内部的任务</li>
+<li>任务的监控与容错</li>
+</ol>
+</li>
+<li>Container
+<ol>
+<li>Container是YARN中资源抽象，它封住了某个节点上的多维度资源，如内存、CPU、磁盘、网络等。</li>
+</ol>
+</li>
+</ol>
+<h1 id="maprudece架构概述"><a class="header" href="#maprudece架构概述">MapRudece架构概述</a></h1>
+<p>MapReduce将计算过程分为两个阶段：Map和Reduce</p>
+<ol>
+<li>Map阶段并行处理输入数据</li>
+<li>Reduce阶段对Map结果进行汇总</li>
+</ol>
+<h1 id="大数据技术生态系统"><a class="header" href="#大数据技术生态系统">大数据技术生态系统</a></h1>
+<table><thead><tr><th>数据来源层</th><th>数据传输层</th><th>数据存储层</th><th>资源管理层</th><th>数据计算层</th><th>任务调度层</th><th>配置和调度</th><th>业务模型层</th></tr></thead><tbody>
+<tr><td>数据库（结构化数据）</td><td>Sqoop数据传递</td><td><strong>HDFS文件存储</strong></td><td>YARN资源管理</td><td>MapReduce<u>离线</u>计算（1. <strong>Hive数据查询</strong>（javaEE）、2. Mahout数据挖掘（算法））</td><td>Oozie任务调度、Azkaban任务调度</td><td>Zookeeper（容易改变的配置信息）</td><td>业务模型、数据库可视化、业务应用</td></tr>
+<tr><td>文件日志（半结构化数据）</td><td>Flume日志收集</td><td><strong>HDFS文件存储</strong>/HBase非关系型数据库</td><td>YARN资源管理</td><td>Spark Core内存计算 （<u>离线</u>1. Spark Mlib数据挖掘、2.Spark R数据分析、3.Spark Sql数据查询；<u>准实时批处理</u>Spark Streaming实时计算）/Flink 流处理</td><td>Oozie任务调度、Azkaban任务调度</td><td>Zookeeper（容易改变的配置信息）</td><td>业务模型、数据库可视化、业务应用</td></tr>
+<tr><td>视频、ppt等（非结构化数据）</td><td>Kafka消息队列</td><td>Kafka缓存一些数据</td><td></td><td></td><td></td><td>Zookeeper（容易改变的配置信息）</td><td>业务模型、数据库可视化、业务应用</td></tr>
+</tbody></table>
+<p><img src="img/image-20211226125619030.png" alt="image-大数据技术生态系统" /></p>
+<h1 id="推荐系统项目框架"><a class="header" href="#推荐系统项目框架">推荐系统项目框架</a></h1>
+<p><img src="img/image-20211226132415451.png" alt="image-推荐系统" /></p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../../algorithm/about.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../../bigData/linux/aboutlinux.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next" href="../../algorithm/inear_structure/list.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="../../bigData/Hadoop/三种模式及搭建.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -176,11 +233,11 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../../algorithm/about.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../../bigData/linux/aboutlinux.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next" href="../../algorithm/inear_structure/list.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="../../bigData/Hadoop/三种模式及搭建.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
