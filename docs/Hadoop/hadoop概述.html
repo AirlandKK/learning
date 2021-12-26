@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>线性结构 - AirlandKK&#x27;学习笔记</title>
+        <title>Hadoop - AirlandKK&#x27;学习笔记</title>
 
 
         <!-- Custom HTML head -->
@@ -13,21 +13,21 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff" />
 
-        <link rel="icon" href="../../favicon.svg">
-        <link rel="shortcut icon" href="../../favicon.png">
-        <link rel="stylesheet" href="../../css/variables.css">
-        <link rel="stylesheet" href="../../css/general.css">
-        <link rel="stylesheet" href="../../css/chrome.css">
-        <link rel="stylesheet" href="../../css/print.css" media="print">
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
 
         <!-- Fonts -->
-        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
-        <link rel="stylesheet" href="../../fonts/fonts.css">
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" href="../../highlight.css">
-        <link rel="stylesheet" href="../../tomorrow-night.css">
-        <link rel="stylesheet" href="../../ayu-highlight.css">
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
 
@@ -37,7 +37,7 @@
     <body>
         <!-- Provide site root to javascript -->
         <script type="text/javascript">
-            var path_to_root = "../../";
+            var path_to_root = "../";
             var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
 
@@ -83,7 +83,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="../../algorithm/about.html"><strong aria-hidden="true">1.</strong> 数据结构与算法</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../algorithm/inear_structure/algorithmAbout.html"><strong aria-hidden="true">1.1.</strong> 线性结构</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../algorithm/inear_structure/list.html" class="active"><strong aria-hidden="true">1.1.1.</strong> 线性结构</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="../../bigData/about.html"><strong aria-hidden="true">2.</strong> 大数据</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../Hadoop/hadoop概述.html"><strong aria-hidden="true">2.1.</strong> Hadoop</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../Hadoop/三种模式及搭建.html"><strong aria-hidden="true">2.1.1.</strong> 三种模式及搭建</a></li></ol></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../algorithm/about.html"><strong aria-hidden="true">1.</strong> 数据结构与算法</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../algorithm/inear_structure/algorithmAbout.html"><strong aria-hidden="true">1.1.</strong> 线性结构</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../algorithm/inear_structure/list.html"><strong aria-hidden="true">1.1.1.</strong> 线性结构</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="../bigData/about.html"><strong aria-hidden="true">2.</strong> 大数据</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Hadoop/hadoop概述.html" class="active"><strong aria-hidden="true">2.1.</strong> Hadoop</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Hadoop/三种模式及搭建.html"><strong aria-hidden="true">2.1.1.</strong> 三种模式及搭建</a></li></ol></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -115,7 +115,7 @@
                     <h1 class="menu-title">AirlandKK&#x27;学习笔记</h1>
 
                     <div class="right-buttons">
-                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
 
@@ -144,53 +144,17 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="线性结构"><a class="header" href="#线性结构">线性结构</a></h1>
-<h2 id="什么是线性表"><a class="header" href="#什么是线性表">什么是线性表？</a></h2>
-<p>多项式表示问题的启示：</p>
-<ol>
-<li>同一个问题可以有不同的表示（存储）方式</li>
-<li>有一类共性问题：有序线性序列的组织和管理</li>
-</ol>
-<p>“线性表”：由同类型数据元素构成有序序列的线性结构</p>
-<ul>
-<li>表中元素个数称为线性表的<strong>长度</strong></li>
-<li>线性表没有元素时，称为<strong>空表</strong></li>
-<li>表起始位置称为<strong>表头</strong>，表结束位置称<strong>表尾</strong></li>
-</ul>
-<p><img src="img/list1.png" alt="线性表的增删改查" /></p>
-<h3 id="线性表的链式存储实现"><a class="header" href="#线性表的链式存储实现">线性表的链式存储实现</a></h3>
-<ul>
-<li>不要求逻辑上相邻的两个元素物理上也相邻；通过“链”建立起数据元素之间的逻辑关系。</li>
-<li>插入、删除不需要移动数据元素，只需要修改“链”。</li>
-</ul>
-<h4 id="广义表"><a class="header" href="#广义表">广义表</a></h4>
-<p>我们知道了一元多项式的表示，那么二元多项式又该如何表示？<br />
-<img src="img/list1.png" alt="" /></p>
-<ul>
-<li>广义表是线性表的推广</li>
-<li>对于线性表而言，n个元素都是基本的单元素；</li>
-<li>广义表中，这些元素不仅可以是单元素也可以是另一个广义表。</li>
-</ul>
-<h4 id="多重链表"><a class="header" href="#多重链表">多重链表</a></h4>
-<p>链表中的节点可能同时隶属于多个链</p>
-<ul>
-<li>多重链表中结点的<strong>指针域会有多个</strong>，如前面例子包含了Next和SubList两个指针域；</li>
-<li>但包含两个指针域的链表并不一定是多重链表，比如在<strong>双向链表不是多重链表。</strong></li>
-<li>多重链表有广泛的用途：基本上如树、图这样相对复杂的数据结构都可以采用多重链表方式实现存储。<br />
-<img src="img/list3.png" alt="" /><br />
-<img src="img/list4.png" alt="" /> 这就是稀疏矩阵用十字链表解决的思路<br />
-<img src="img/list5.png" alt="" /></li>
-</ul>
+                        <h1 id="hadoop"><a class="header" href="#hadoop">Hadoop</a></h1>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../../algorithm/inear_structure/algorithmAbout.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../bigData/about.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next" href="../../bigData/about.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="../Hadoop/三种模式及搭建.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -200,11 +164,11 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../../algorithm/inear_structure/algorithmAbout.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../bigData/about.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next" href="../../bigData/about.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="../Hadoop/三种模式及搭建.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
@@ -219,13 +183,13 @@
         </script>
 
 
-        <script src="../../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="../../mark.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="../../searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
 
-        <script src="../../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="../../highlight.js" type="text/javascript" charset="utf-8"></script>
-        <script src="../../book.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
 
         <!-- Custom JS scripts -->
 
