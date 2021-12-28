@@ -6,5 +6,5 @@
 - [大数据](./bigData/about.md)
   - [Linux](./bigData/linux/aboutlinux.md)
   - [Hadoop](./bigData/Hadoop/hadoopabout.md)
-    - [三种模式及搭建](./bigData/Hadoop/typeandbuild.md)
+    - [三种模式及搭建环境](./bigData/Hadoop/typeandbuild.md)
 
