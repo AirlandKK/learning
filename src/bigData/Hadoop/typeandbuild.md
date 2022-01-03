@@ -388,3 +388,84 @@ ZKK01
 5. Web端查看YARN的ResourceManager
    - IP：8088
    - 查看YARN上运行的Job信息
+
+# 集群基本测试
+
+#### 1.上传文件到集群
+
+上传小文件
+
+```shell
+hadoop fs -mkdir /wcinput
+hadoop fs -put wcinput/wc.input /wcinput
+```
+
+![image-20220103153532117](img/image-20220103153532117.png)
+
+网页中操作，要在本地机配置hosts文件
+
+#### 2.查看HDFS在磁盘存储文件内容
+
+1. 查看：页面只是一个链接，真实的东西都存在data节点上。
+
+```shell
+cd data/tmp/dfs/data/current/BP-912934988-110.42.160.28-1641041699096/current/finalized/subdir0/subdir0/
+
+cat blk_1073741825
+zhangkeke hadoop zhangsan lisi wangwu 
+liuliu wangmengting xingguo 
+zhangkeke 
+keke keke keke keke keke hadoop
+hive hivehive
+
+```
+
+2. 拼接：默认块大小128MB如上传一个jdk tar包，其实也是放在节点上 可通过拼接命令查看
+
+   ![image-20220103160451159](img/image-20220103160451159.png)
+
+#### 3.下载
+
+```shell
+hadoop fs -get /XXX ./
+```
+
+#### 4.执行wordcount程序
+
+```sehll
+hadoop jar share/hadoop/mapreduce/hadoop-mapreduce-examples-3.3.1.jar wordcount /wcinput /wcoutput
+```
+
+# 配置历史服务器
+
+**3.2以上的版本没配置也能跳转**
+
+```xml
+    <!--历史服务器端地址-->
+    <property>
+        <name>mapreduce.jobhistory.address</name>
+        <value>master:10020</value>
+    </property>
+    <!--历史服务器web端地址-->
+    <property>
+        <name>mapreduce.jobhistory.webapp.address</name>
+        <value>master:19888</value>
+    </property>
+```
+
+需要手动启动历史服务器
+
+```shell
+mapred --daemon start historyserver
+```
+
+# 开启日志聚集功能！
+
+伪分布式就不用了
+
+![image-20220103174805436](img/image-20220103174805436.png)
+
+# hadoop集群的群起脚本
+
+https://www.codetd.com/article/1452178
+

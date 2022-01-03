@@ -63,3 +63,27 @@ NameNode无法启动，报错原因：
 端口被占用是直接原因，但起因是不能分配所需的地址，跟地址有关的就联想到 /etc/hosts文件
 
 云服务器的IP要换成内网的IP，内网可以比作一个局域网。 
+
+
+
+hadoop集群部署上后，在服务器中运行hadoop自带的jar包中的实例报错
+
+![image-20220103164220531](img/image-20220103164220531.png)
+
+解决方法：按错误提示，在mapred-site.xml配置文件中添加hadoop根目录
+
+1.先运行hadoop classpath得到classpath
+
+将得到的classpath全部复制到mapred-site.xml中，配置
+
+```xml
+<property> 
+    <name>mapreduce.application.classpath</name>    <value>/home/hadoop/app/hadoop/etc/hadoop:/home/hadoop/app/hadoop/share/hadoop/common/lib/*:/home/hadoop/app/hadoop/share/hadoop/common/*:/home/hadoop/app/hadoop/share/hadoop/hdfs:/home/hadoop/app/hadoop/share/hadoop/hdfs/lib/*:/home/hadoop/app/hadoop/share/hadoop/hdfs/*:/home/hadoop/app/hadoop/share/hadoop/mapreduce/*:/home/hadoop/app/hadoop/share/hadoop/yarn:/home/hadoop/app/hadoop/share/hadoop/yarn/lib/*:/home/hadoop/app/hadoop/share/hadoop/yarn/*
+</value>
+</property>
+
+```
+
+配置结束关闭mapred-site.xml
+
+重新启动集群，再在share文件中运行

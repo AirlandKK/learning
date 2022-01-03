@@ -84,7 +84,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="algorithm/about.html"><strong aria-hidden="true">1.</strong> 数据结构与算法</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="algorithm/inear_structure/algorithmAbout.html"><strong aria-hidden="true">1.1.</strong> 线性结构</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="algorithm/inear_structure/list.html"><strong aria-hidden="true">1.1.1.</strong> 线性结构</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="bigData/about.html"><strong aria-hidden="true">2.</strong> 大数据</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="bigData/linux/aboutlinux.html"><strong aria-hidden="true">2.1.</strong> Linux</a></li><li class="chapter-item expanded "><a href="bigData/Hadoop/hadoopabout.html"><strong aria-hidden="true">2.2.</strong> Hadoop</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="bigData/Hadoop/typeandbuild.html"><strong aria-hidden="true">2.2.1.</strong> 三种模式及搭建环境</a></li></ol></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="algorithm/about.html"><strong aria-hidden="true">1.</strong> 数据结构与算法</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="algorithm/inear_structure/algorithmAbout.html"><strong aria-hidden="true">1.1.</strong> 线性结构</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="algorithm/inear_structure/list.html"><strong aria-hidden="true">1.1.1.</strong> 线性结构</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="bigData/about.html"><strong aria-hidden="true">2.</strong> 大数据</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="bigData/linux/aboutlinux.html"><strong aria-hidden="true">2.1.</strong> Linux</a></li><li class="chapter-item expanded "><a href="bigData/Hadoop/hadoopabout.html"><strong aria-hidden="true">2.2.</strong> Hadoop</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="bigData/Hadoop/typeandbuild.html"><strong aria-hidden="true">2.2.1.</strong> 三种模式及搭建环境</a></li><li class="chapter-item expanded "><a href="bigData/Hadoop/HDFS.html"><strong aria-hidden="true">2.2.2.</strong> HDFS</a></li><li class="chapter-item expanded "><a href="bigData/Hadoop/question.html"><strong aria-hidden="true">2.2.3.</strong> 问题</a></li><li class="chapter-item expanded "><a href="bigData/Hadoop/facetest.html"><strong aria-hidden="true">2.2.4.</strong> 面试</a></li></ol></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -594,6 +594,166 @@ export YARN_NODEMANAGER_USER=root
 </ul>
 </li>
 </ol>
+<h1 id="集群基本测试"><a class="header" href="#集群基本测试">集群基本测试</a></h1>
+<h4 id="1上传文件到集群"><a class="header" href="#1上传文件到集群">1.上传文件到集群</a></h4>
+<p>上传小文件</p>
+<pre><code class="language-shell">hadoop fs -mkdir /wcinput
+hadoop fs -put wcinput/wc.input /wcinput
+</code></pre>
+<p><img src="bigData/Hadoop/img/image-20220103153532117.png" alt="image-20220103153532117" /></p>
+<p>网页中操作，要在本地机配置hosts文件</p>
+<h4 id="2查看hdfs在磁盘存储文件内容"><a class="header" href="#2查看hdfs在磁盘存储文件内容">2.查看HDFS在磁盘存储文件内容</a></h4>
+<ol>
+<li>查看：页面只是一个链接，真实的东西都存在data节点上。</li>
+</ol>
+<pre><code class="language-shell">cd data/tmp/dfs/data/current/BP-912934988-110.42.160.28-1641041699096/current/finalized/subdir0/subdir0/
+
+cat blk_1073741825
+zhangkeke hadoop zhangsan lisi wangwu 
+liuliu wangmengting xingguo 
+zhangkeke 
+keke keke keke keke keke hadoop
+hive hivehive
+
+</code></pre>
+<ol start="2">
+<li>
+<p>拼接：默认块大小128MB如上传一个jdk tar包，其实也是放在节点上 可通过拼接命令查看</p>
+<p><img src="bigData/Hadoop/img/image-20220103160451159.png" alt="image-20220103160451159" /></p>
+</li>
+</ol>
+<h4 id="3下载"><a class="header" href="#3下载">3.下载</a></h4>
+<pre><code class="language-shell">hadoop fs -get /XXX ./
+</code></pre>
+<h4 id="4执行wordcount程序"><a class="header" href="#4执行wordcount程序">4.执行wordcount程序</a></h4>
+<pre><code class="language-sehll">hadoop jar share/hadoop/mapreduce/hadoop-mapreduce-examples-3.3.1.jar wordcount /wcinput /wcoutput
+</code></pre>
+<h1 id="配置历史服务器"><a class="header" href="#配置历史服务器">配置历史服务器</a></h1>
+<p><strong>3.2以上的版本没配置也能跳转</strong></p>
+<pre><code class="language-xml">    &lt;!--历史服务器端地址--&gt;
+    &lt;property&gt;
+        &lt;name&gt;mapreduce.jobhistory.address&lt;/name&gt;
+        &lt;value&gt;master:10020&lt;/value&gt;
+    &lt;/property&gt;
+    &lt;!--历史服务器web端地址--&gt;
+    &lt;property&gt;
+        &lt;name&gt;mapreduce.jobhistory.webapp.address&lt;/name&gt;
+        &lt;value&gt;master:19888&lt;/value&gt;
+    &lt;/property&gt;
+</code></pre>
+<p>需要手动启动历史服务器</p>
+<pre><code class="language-shell">mapred --daemon start historyserver
+</code></pre>
+<h1 id="开启日志聚集功能"><a class="header" href="#开启日志聚集功能">开启日志聚集功能！</a></h1>
+<p>伪分布式就不用了</p>
+<p><img src="bigData/Hadoop/img/image-20220103174805436.png" alt="image-20220103174805436" /></p>
+<h1 id="hadoop集群的群起脚本"><a class="header" href="#hadoop集群的群起脚本">hadoop集群的群起脚本</a></h1>
+<p>https://www.codetd.com/article/1452178</p>
+<div style="break-before: page; page-break-before: always;"></div><p><img src="bigData/Hadoop/img/image-20220103202221934.png" alt="image-20220103202221934" /></p>
+<div style="break-before: page; page-break-before: always;"></div><p>linux centos yum报错 To address this issue please refer to the below wiki article 解决方法</p>
+<img src="bigData/Hadoop/img/image-20220101212939753.png" alt="image-20220101212939753" style="zoom:33%;float:left" />
+<p>报错原因：国外<a href="https://so.csdn.net/so/search?q=yum">yum</a>镜像源 国内下载不了 修改为国内阿里yum镜像源</p>
+<p>解决方法：</p>
+<pre><code class="language-bash">cd /etc/yum.repos.d/
+mkdir repo_bak
+mv *.repo repo_bak/
+wget http://mirrors.aliyun.com/repo/Centos-7.repo
+yum clean all
+yum makecache
+</code></pre>
+<p>详细参考：《<a href="https://so.csdn.net/so/search?q=centos7">centos7</a> 配置国内yum源和epel源》https://blog.csdn.net/whatday/article/details/106107168</p>
+<p>解析不不了配置文件中的$releasever</p>
+<p><img src="bigData/Hadoop/img/image-20220101213224717.png" alt="image-20220101213224717" /></p>
+<pre><code class="language-shell">vim Centos-7.repo
+vim CentOS-Base.repo
+#用vim的查找替换命令 将$releasever都替换为7（因为我的是centos7）
+%s/\$releasever/7/g
+</code></pre>
+<h4 id="vim-字符串替换"><a class="header" href="#vim-字符串替换">Vim 字符串替换</a></h4>
+<p>查找和替换是任意一款文本编辑器的一组常见和必备功能。下面就来讲解 Vim 中的字符串替换功能。</p>
+<p>Vim 使用以下命令结构实现替换功能。</p>
+<pre><code>:&lt;range&gt; s/&lt;search_string&gt;/&lt;replace_string&gt;/&lt;modifier&gt;
+</code></pre>
+<ul>
+<li>range - 定义执行“查找和替换”函数的范围，有两个不同的值
+<ul>
+<li>％ - 对整个文件执行</li>
+<li>&lt; start _line &gt; &lt; end_line &gt; - 在一组特定的行上面执行操作</li>
+</ul>
+</li>
+<li>search_string - 需要替换的字符串</li>
+<li>replace_string - 替换旧字符串的新字符串</li>
+<li>modifier - 确定替换行为，有几个不同的值
+<ul>
+<li>g - 全局替换</li>
+<li>gc - 在每次更换之前要求确认</li>
+<li>gn - 忽略替换功能并突出显示查找结果。</li>
+</ul>
+</li>
+</ul>
+<p>NameNode无法启动，报错原因：</p>
+<p>1、 java.net.BindException: Port in use: master:9001</p>
+<p>2、Caused by: java.net.BindException: Cannot assign requested address</p>
+<img src="bigData/Hadoop/img/image-20220101223611130.png" alt="image-20220101223611130" style="zoom:33%;float:left;" />
+<p>端口被占用是直接原因，但起因是不能分配所需的地址，跟地址有关的就联想到 /etc/hosts文件</p>
+<p>云服务器的IP要换成内网的IP，内网可以比作一个局域网。 </p>
+<p>hadoop集群部署上后，在服务器中运行hadoop自带的jar包中的实例报错</p>
+<p><img src="bigData/Hadoop/img/image-20220103164220531.png" alt="image-20220103164220531" /></p>
+<p>解决方法：按错误提示，在mapred-site.xml配置文件中添加hadoop根目录</p>
+<p>1.先运行hadoop classpath得到classpath</p>
+<p>将得到的classpath全部复制到mapred-site.xml中，配置</p>
+<pre><code class="language-xml">&lt;property&gt; 
+    &lt;name&gt;mapreduce.application.classpath&lt;/name&gt;    &lt;value&gt;/home/hadoop/app/hadoop/etc/hadoop:/home/hadoop/app/hadoop/share/hadoop/common/lib/*:/home/hadoop/app/hadoop/share/hadoop/common/*:/home/hadoop/app/hadoop/share/hadoop/hdfs:/home/hadoop/app/hadoop/share/hadoop/hdfs/lib/*:/home/hadoop/app/hadoop/share/hadoop/hdfs/*:/home/hadoop/app/hadoop/share/hadoop/mapreduce/*:/home/hadoop/app/hadoop/share/hadoop/yarn:/home/hadoop/app/hadoop/share/hadoop/yarn/lib/*:/home/hadoop/app/hadoop/share/hadoop/yarn/*
+&lt;/value&gt;
+&lt;/property&gt;
+
+</code></pre>
+<p>配置结束关闭mapred-site.xml</p>
+<p>重新启动集群，再在share文件中运行</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="常用端口号及配置文件"><a class="header" href="#常用端口号及配置文件">常用端口号及配置文件</a></h1>
+<ul>
+<li>
+<p>hadoop3.x</p>
+<ul>
+<li>HDFS NameNode 内部常用端口：8020/9000/9820</li>
+<li>HDFS NameNode 对用户的查询端口：9870</li>
+<li>Yarn查看任务运行情况的：8088</li>
+<li>历史服务器：19888</li>
+</ul>
+</li>
+<li>
+<p>hadoop2.x</p>
+<ul>
+<li>HDFS NameNode 内部常用端口：8020/9000</li>
+<li>HDFS NameNode 对用户的查询端口：50070</li>
+<li>Yarn查看任务运行情况的：8088</li>
+<li>历史服务器：19888</li>
+</ul>
+</li>
+<li>
+<p>常用配置文件</p>
+<ul>
+<li>3.x
+<ul>
+<li>core-site.xml</li>
+<li>hdfs-site.xml</li>
+<li>yarn-site.xml</li>
+<li>mapred-site.xml</li>
+<li>wokers</li>
+</ul>
+</li>
+<li>2.x
+<ul>
+<li>core-site.xml</li>
+<li>hdfs-site.xml</li>
+<li>yarn-site.xml</li>
+<li>mapred-site.xml</li>
+<li>slaves </li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
 
                     </main>
 

@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>线性结构 - AirlandKK&#x27;学习笔记</title>
+        <title>问题 - AirlandKK&#x27;学习笔记</title>
 
 
         <!-- Custom HTML head -->
@@ -83,7 +83,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="../../algorithm/about.html"><strong aria-hidden="true">1.</strong> 数据结构与算法</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../algorithm/inear_structure/algorithmAbout.html"><strong aria-hidden="true">1.1.</strong> 线性结构</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../algorithm/inear_structure/list.html" class="active"><strong aria-hidden="true">1.1.1.</strong> 线性结构</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="../../bigData/about.html"><strong aria-hidden="true">2.</strong> 大数据</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../bigData/linux/aboutlinux.html"><strong aria-hidden="true">2.1.</strong> Linux</a></li><li class="chapter-item expanded "><a href="../../bigData/Hadoop/hadoopabout.html"><strong aria-hidden="true">2.2.</strong> Hadoop</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../bigData/Hadoop/typeandbuild.html"><strong aria-hidden="true">2.2.1.</strong> 三种模式及搭建环境</a></li><li class="chapter-item expanded "><a href="../../bigData/Hadoop/HDFS.html"><strong aria-hidden="true">2.2.2.</strong> HDFS</a></li><li class="chapter-item expanded "><a href="../../bigData/Hadoop/question.html"><strong aria-hidden="true">2.2.3.</strong> 问题</a></li><li class="chapter-item expanded "><a href="../../bigData/Hadoop/facetest.html"><strong aria-hidden="true">2.2.4.</strong> 面试</a></li></ol></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../../algorithm/about.html"><strong aria-hidden="true">1.</strong> 数据结构与算法</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../algorithm/inear_structure/algorithmAbout.html"><strong aria-hidden="true">1.1.</strong> 线性结构</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../algorithm/inear_structure/list.html"><strong aria-hidden="true">1.1.1.</strong> 线性结构</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="../../bigData/about.html"><strong aria-hidden="true">2.</strong> 大数据</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../bigData/linux/aboutlinux.html"><strong aria-hidden="true">2.1.</strong> Linux</a></li><li class="chapter-item expanded "><a href="../../bigData/Hadoop/hadoopabout.html"><strong aria-hidden="true">2.2.</strong> Hadoop</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../bigData/Hadoop/typeandbuild.html"><strong aria-hidden="true">2.2.1.</strong> 三种模式及搭建环境</a></li><li class="chapter-item expanded "><a href="../../bigData/Hadoop/HDFS.html"><strong aria-hidden="true">2.2.2.</strong> HDFS</a></li><li class="chapter-item expanded "><a href="../../bigData/Hadoop/question.html" class="active"><strong aria-hidden="true">2.2.3.</strong> 问题</a></li><li class="chapter-item expanded "><a href="../../bigData/Hadoop/facetest.html"><strong aria-hidden="true">2.2.4.</strong> 面试</a></li></ol></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -144,53 +144,76 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="线性结构"><a class="header" href="#线性结构">线性结构</a></h1>
-<h2 id="什么是线性表"><a class="header" href="#什么是线性表">什么是线性表？</a></h2>
-<p>多项式表示问题的启示：</p>
-<ol>
-<li>同一个问题可以有不同的表示（存储）方式</li>
-<li>有一类共性问题：有序线性序列的组织和管理</li>
-</ol>
-<p>“线性表”：由同类型数据元素构成有序序列的线性结构</p>
+                        <p>linux centos yum报错 To address this issue please refer to the below wiki article 解决方法</p>
+<img src="img/image-20220101212939753.png" alt="image-20220101212939753" style="zoom:33%;float:left" />
+<p>报错原因：国外<a href="https://so.csdn.net/so/search?q=yum">yum</a>镜像源 国内下载不了 修改为国内阿里yum镜像源</p>
+<p>解决方法：</p>
+<pre><code class="language-bash">cd /etc/yum.repos.d/
+mkdir repo_bak
+mv *.repo repo_bak/
+wget http://mirrors.aliyun.com/repo/Centos-7.repo
+yum clean all
+yum makecache
+</code></pre>
+<p>详细参考：《<a href="https://so.csdn.net/so/search?q=centos7">centos7</a> 配置国内yum源和epel源》https://blog.csdn.net/whatday/article/details/106107168</p>
+<p>解析不不了配置文件中的$releasever</p>
+<p><img src="img/image-20220101213224717.png" alt="image-20220101213224717" /></p>
+<pre><code class="language-shell">vim Centos-7.repo
+vim CentOS-Base.repo
+#用vim的查找替换命令 将$releasever都替换为7（因为我的是centos7）
+%s/\$releasever/7/g
+</code></pre>
+<h4 id="vim-字符串替换"><a class="header" href="#vim-字符串替换">Vim 字符串替换</a></h4>
+<p>查找和替换是任意一款文本编辑器的一组常见和必备功能。下面就来讲解 Vim 中的字符串替换功能。</p>
+<p>Vim 使用以下命令结构实现替换功能。</p>
+<pre><code>:&lt;range&gt; s/&lt;search_string&gt;/&lt;replace_string&gt;/&lt;modifier&gt;
+</code></pre>
 <ul>
-<li>表中元素个数称为线性表的<strong>长度</strong></li>
-<li>线性表没有元素时，称为<strong>空表</strong></li>
-<li>表起始位置称为<strong>表头</strong>，表结束位置称<strong>表尾</strong></li>
-</ul>
-<p><img src="img/list1.png" alt="线性表的增删改查" /></p>
-<h3 id="线性表的链式存储实现"><a class="header" href="#线性表的链式存储实现">线性表的链式存储实现</a></h3>
+<li>range - 定义执行“查找和替换”函数的范围，有两个不同的值
 <ul>
-<li>不要求逻辑上相邻的两个元素物理上也相邻；通过“链”建立起数据元素之间的逻辑关系。</li>
-<li>插入、删除不需要移动数据元素，只需要修改“链”。</li>
+<li>％ - 对整个文件执行</li>
+<li>&lt; start _line &gt; &lt; end_line &gt; - 在一组特定的行上面执行操作</li>
 </ul>
-<h4 id="广义表"><a class="header" href="#广义表">广义表</a></h4>
-<p>我们知道了一元多项式的表示，那么二元多项式又该如何表示？<br />
-<img src="img/list1.png" alt="" /></p>
+</li>
+<li>search_string - 需要替换的字符串</li>
+<li>replace_string - 替换旧字符串的新字符串</li>
+<li>modifier - 确定替换行为，有几个不同的值
 <ul>
-<li>广义表是线性表的推广</li>
-<li>对于线性表而言，n个元素都是基本的单元素；</li>
-<li>广义表中，这些元素不仅可以是单元素也可以是另一个广义表。</li>
+<li>g - 全局替换</li>
+<li>gc - 在每次更换之前要求确认</li>
+<li>gn - 忽略替换功能并突出显示查找结果。</li>
 </ul>
-<h4 id="多重链表"><a class="header" href="#多重链表">多重链表</a></h4>
-<p>链表中的节点可能同时隶属于多个链</p>
-<ul>
-<li>多重链表中结点的<strong>指针域会有多个</strong>，如前面例子包含了Next和SubList两个指针域；</li>
-<li>但包含两个指针域的链表并不一定是多重链表，比如在<strong>双向链表不是多重链表。</strong></li>
-<li>多重链表有广泛的用途：基本上如树、图这样相对复杂的数据结构都可以采用多重链表方式实现存储。<br />
-<img src="img/list3.png" alt="" /><br />
-<img src="img/list4.png" alt="" /> 这就是稀疏矩阵用十字链表解决的思路<br />
-<img src="img/list5.png" alt="" /></li>
+</li>
 </ul>
+<p>NameNode无法启动，报错原因：</p>
+<p>1、 java.net.BindException: Port in use: master:9001</p>
+<p>2、Caused by: java.net.BindException: Cannot assign requested address</p>
+<img src="img/image-20220101223611130.png" alt="image-20220101223611130" style="zoom:33%;float:left;" />
+<p>端口被占用是直接原因，但起因是不能分配所需的地址，跟地址有关的就联想到 /etc/hosts文件</p>
+<p>云服务器的IP要换成内网的IP，内网可以比作一个局域网。 </p>
+<p>hadoop集群部署上后，在服务器中运行hadoop自带的jar包中的实例报错</p>
+<p><img src="img/image-20220103164220531.png" alt="image-20220103164220531" /></p>
+<p>解决方法：按错误提示，在mapred-site.xml配置文件中添加hadoop根目录</p>
+<p>1.先运行hadoop classpath得到classpath</p>
+<p>将得到的classpath全部复制到mapred-site.xml中，配置</p>
+<pre><code class="language-xml">&lt;property&gt; 
+    &lt;name&gt;mapreduce.application.classpath&lt;/name&gt;    &lt;value&gt;/home/hadoop/app/hadoop/etc/hadoop:/home/hadoop/app/hadoop/share/hadoop/common/lib/*:/home/hadoop/app/hadoop/share/hadoop/common/*:/home/hadoop/app/hadoop/share/hadoop/hdfs:/home/hadoop/app/hadoop/share/hadoop/hdfs/lib/*:/home/hadoop/app/hadoop/share/hadoop/hdfs/*:/home/hadoop/app/hadoop/share/hadoop/mapreduce/*:/home/hadoop/app/hadoop/share/hadoop/yarn:/home/hadoop/app/hadoop/share/hadoop/yarn/lib/*:/home/hadoop/app/hadoop/share/hadoop/yarn/*
+&lt;/value&gt;
+&lt;/property&gt;
+
+</code></pre>
+<p>配置结束关闭mapred-site.xml</p>
+<p>重新启动集群，再在share文件中运行</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../../algorithm/inear_structure/algorithmAbout.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../../bigData/Hadoop/HDFS.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next" href="../../bigData/about.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="../../bigData/Hadoop/facetest.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -200,11 +223,11 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../../algorithm/inear_structure/algorithmAbout.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../../bigData/Hadoop/HDFS.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next" href="../../bigData/about.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="../../bigData/Hadoop/facetest.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
