@@ -189,7 +189,7 @@ systemctl restart sshd
 - [update_hostname,once-per-instance]
 </code></pre>
 <p>linux centos yum报错 To address this issue please refer to the below wiki article 解决方法</p>
-<img src="img/image-20220101212939753.png" alt="image-20220101212939753" style="zoom:33%;float:left" />
+<img src="img/image-20220101212939753.png" alt="image-20220101212939753" style="zoom:33%;" />
 <p>报错原因：国外<a href="https://so.csdn.net/so/search?q=yum">yum</a>镜像源 国内下载不了 修改为国内阿里yum镜像源</p>
 <p>解决方法：</p>
 <pre><code class="language-bash">cd /etc/yum.repos.d/
@@ -232,7 +232,7 @@ vim CentOS-Base.repo
 <h4 id="5namenode无法启动报错原因"><a class="header" href="#5namenode无法启动报错原因">5.NameNode无法启动，报错原因：</a></h4>
 <p>1、 java.net.BindException: Port in use: master:9001</p>
 <p>2、Caused by: java.net.BindException: Cannot assign requested address</p>
-<img src="img/image-20220101223611130.png" alt="image-20220101223611130" style="zoom:33%;float:left;" />
+<img src="img/image-20220101223611130.png" alt="image-20220101223611130" style="zoom:33%;" />
 <p>端口被占用是直接原因，但起因是不能分配所需的地址，跟地址有关的就联想到 /etc/hosts文件</p>
 <p>云服务器的IP要换成内网的IP，内网可以比作一个局域网。 </p>
 <h4 id="6hadoop集群部署上后在服务器中运行hadoop自带的jar包中的实例报错"><a class="header" href="#6hadoop集群部署上后在服务器中运行hadoop自带的jar包中的实例报错">6.hadoop集群部署上后，在服务器中运行hadoop自带的jar包中的实例报错</a></h4>

@@ -70,7 +70,7 @@ cat $HOME/.ssh/id_rsa.pub >> $HOME/.ssh/authorized_keys
 
 linux centos yum报错 To address this issue please refer to the below wiki article 解决方法
 
-<img src="img/image-20220101212939753.png" alt="image-20220101212939753" style="zoom:33%;float:left" />
+<img src="img/image-20220101212939753.png" alt="image-20220101212939753" style="zoom:33%;" />
 
 报错原因：国外[yum](https://so.csdn.net/so/search?q=yum)镜像源 国内下载不了 修改为国内阿里yum镜像源
 
@@ -128,7 +128,7 @@ Vim 使用以下命令结构实现替换功能。
 
  2、Caused by: java.net.BindException: Cannot assign requested address
 
-<img src="img/image-20220101223611130.png" alt="image-20220101223611130" style="zoom:33%;float:left;" />
+<img src="img/image-20220101223611130.png" alt="image-20220101223611130" style="zoom:33%;" />
 
 端口被占用是直接原因，但起因是不能分配所需的地址，跟地址有关的就联想到 /etc/hosts文件
 
