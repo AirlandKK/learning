@@ -1,3 +1,73 @@
+#### 1.用公司电脑ssh服务器，突然连接不上了（之前可以）
+
+<img src="../../../docs/bigData/Hadoop/img/image-20211229153341947.png" alt="image-20211229153341947" style="zoom:50%;" />
+
+ssh -v root@110.42.160.28 ,报错信息如下
+
+```shell
+C:\02_projects\myGit\learning>ssh -v root@110.42.160.28                                                                                                  
+OpenSSH_for_Windows_8.1p1, LibreSSL 3.0.2
+debug1: Connecting to 110.42.160.28 [110.42.160.28] port 22.
+debug1: connect to address 110.42.160.28 port 22: Connection refused
+ssh: connect to host 110.42.160.28 port 22: Connection refused
+```
+
+用VNC登录，显示**Failed to start OpenSSH server deamon**
+
+接着输入sshd -t 检查：显示Missing privilege separation directory: /var/empty/sshd
+
+解决办法：创建一个目录/var/empty/sshd
+
+```shell
+mkdir /var/empty
+mkdir /var/empty/sshd
+sshd -t
+#重启sshd
+systemctl restart sshd
+```
+
+<img src="../../../docs/bigData/Hadoop/img/image-20211229162400042.png" alt="image-20211229162400042" style="zoom:50%;" />
+
+后能成功登录
+
+#### 2. 伪分布式群起失败。
+
+![image-20211229164421126](../../../docs/bigData/Hadoop/img/image-20211229164421126.png)
+
+解决方法:
+
+可以把/home/hadoop/.ssh/known_hosts文件删了，然后重新生成配对密钥即可
+
+```shell
+sudo apt-get openssh-server
+```
+
+```shell
+ssh-keygen -t rsa -P ""
+```
+
+```shell
+cat $HOME/.ssh/id_rsa.pub >> $HOME/.ssh/authorized_keys
+```
+
+[ssh连接所生成的known_hosts出现的问题](https://blog.csdn.net/weixin_30619101/article/details/96996016?spm=1001.2101.3001.6661.1&utm_medium=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7ECTRLIST%7Edefault-1.no_search_link&depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7ECTRLIST%7Edefault-1.no_search_link&utm_relevant_index=1)
+
+####  3. 解决云服务器重启后，hostname还原的问题
+
+```text
+查看主机名：hostname
+修改主机名：
+方法1：sudo hostname xxx 
+             但是这是临时的，重启后失效
+方法2 ：修改hostname文件，永久修改
+              sudo vi /etc/hostname
+              重启系统后才会生效
+但是，在云服务器上，用方法2设置后，重启后还是会将hostname还原为之前的
+需要在在 /etc/cloud/cloud.cfg中将cloud_init_modules中的下面两行删除
+-set_hostname
+- [update_hostname,once-per-instance]
+```
+
 linux centos yum报错 To address this issue please refer to the below wiki article 解决方法
 
 <img src="img/image-20220101212939753.png" alt="image-20220101212939753" style="zoom:33%;float:left" />
@@ -28,7 +98,7 @@ vim CentOS-Base.repo
 %s/\$releasever/7/g
 ```
 
-#### Vim 字符串替换
+#### 4.Vim 字符串替换
 
 查找和替换是任意一款文本编辑器的一组常见和必备功能。下面就来讲解 Vim 中的字符串替换功能。
 
@@ -52,7 +122,7 @@ Vim 使用以下命令结构实现替换功能。
 
 
 
-NameNode无法启动，报错原因：
+#### 5.NameNode无法启动，报错原因：
 
  1、 java.net.BindException: Port in use: master:9001
 
@@ -66,7 +136,7 @@ NameNode无法启动，报错原因：
 
 
 
-hadoop集群部署上后，在服务器中运行hadoop自带的jar包中的实例报错
+#### 6.hadoop集群部署上后，在服务器中运行hadoop自带的jar包中的实例报错
 
 ![image-20220103164220531](img/image-20220103164220531.png)
 
@@ -86,4 +156,40 @@ hadoop集群部署上后，在服务器中运行hadoop自带的jar包中的实�
 
 配置结束关闭mapred-site.xml
 
-重新启动集群，再在share文件中运行
+重新启动集群，再在share文件中运行        
+
+#### 7. WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!  
+
+报错如下
+
+```
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ZKK01: @    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
+ZKK01: @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ZKK01: IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!
+ZKK01: Someone could be eavesdropping on you right now (man-in-the-middle attack)!
+ZKK01: It is also possible that a host key has just been changed.
+ZKK01: The fingerprint for the ECDSA key sent by the remote host is
+...
+```
+
+**原因：**
+
+因为服务器的ip发生变更了
+第一次SSH连接时，会生成一个认证，储存在客户端（也就是用SSH连线其他电脑的那个，自己操作的那个）中的known_hosts，但是如果服务器验证过了，认证资讯当然也会更改，服务器端与客户端不同时，就会跳出错误啦。
+
+**解决办法：**
+
+```shell
+输入命令：ssh-keygen -R +输入服务器的IP
+```
+
+#### 8.Permission denied (publickey,gssapi-keyex,gssapi-with-mic,password)问题解决
+
+经过排查发现是没有设置免密登录，解决方案如下：
+
+```shell
+ssh-keygen -t rsa
+cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+chmod 0600 ~/.ssh/authorized_keys
+```
