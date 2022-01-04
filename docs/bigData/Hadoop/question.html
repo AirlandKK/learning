@@ -144,7 +144,51 @@
 
                 <div id="content" class="content">
                     <main>
-                        <p>linux centos yum报错 To address this issue please refer to the below wiki article 解决方法</p>
+                        <h4 id="1用公司电脑ssh服务器突然连接不上了之前可以"><a class="header" href="#1用公司电脑ssh服务器突然连接不上了之前可以">1.用公司电脑ssh服务器，突然连接不上了（之前可以）</a></h4>
+<img src="../../../docs/bigData/Hadoop/img/image-20211229153341947.png" alt="image-20211229153341947" style="zoom:50%;" />
+<p>ssh -v root@110.42.160.28 ,报错信息如下</p>
+<pre><code class="language-shell">C:\02_projects\myGit\learning&gt;ssh -v root@110.42.160.28                                                                                                  
+OpenSSH_for_Windows_8.1p1, LibreSSL 3.0.2
+debug1: Connecting to 110.42.160.28 [110.42.160.28] port 22.
+debug1: connect to address 110.42.160.28 port 22: Connection refused
+ssh: connect to host 110.42.160.28 port 22: Connection refused
+</code></pre>
+<p>用VNC登录，显示<strong>Failed to start OpenSSH server deamon</strong></p>
+<p>接着输入sshd -t 检查：显示Missing privilege separation directory: /var/empty/sshd</p>
+<p>解决办法：创建一个目录/var/empty/sshd</p>
+<pre><code class="language-shell">mkdir /var/empty
+mkdir /var/empty/sshd
+sshd -t
+#重启sshd
+systemctl restart sshd
+</code></pre>
+<img src="../../../docs/bigData/Hadoop/img/image-20211229162400042.png" alt="image-20211229162400042" style="zoom:50%;" />
+<p>后能成功登录</p>
+<h4 id="2-伪分布式群起失败"><a class="header" href="#2-伪分布式群起失败">2. 伪分布式群起失败。</a></h4>
+<p><img src="../../../docs/bigData/Hadoop/img/image-20211229164421126.png" alt="image-20211229164421126" /></p>
+<p>解决方法:</p>
+<p>可以把/home/hadoop/.ssh/known_hosts文件删了，然后重新生成配对密钥即可</p>
+<pre><code class="language-shell">sudo apt-get openssh-server
+</code></pre>
+<pre><code class="language-shell">ssh-keygen -t rsa -P &quot;&quot;
+</code></pre>
+<pre><code class="language-shell">cat $HOME/.ssh/id_rsa.pub &gt;&gt; $HOME/.ssh/authorized_keys
+</code></pre>
+<p><a href="https://blog.csdn.net/weixin_30619101/article/details/96996016?spm=1001.2101.3001.6661.1&amp;utm_medium=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7ECTRLIST%7Edefault-1.no_search_link&amp;depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7ECTRLIST%7Edefault-1.no_search_link&amp;utm_relevant_index=1">ssh连接所生成的known_hosts出现的问题</a></p>
+<h4 id="3-解决云服务器重启后hostname还原的问题"><a class="header" href="#3-解决云服务器重启后hostname还原的问题">3. 解决云服务器重启后，hostname还原的问题</a></h4>
+<pre><code class="language-text">查看主机名：hostname
+修改主机名：
+方法1：sudo hostname xxx 
+             但是这是临时的，重启后失效
+方法2 ：修改hostname文件，永久修改
+              sudo vi /etc/hostname
+              重启系统后才会生效
+但是，在云服务器上，用方法2设置后，重启后还是会将hostname还原为之前的
+需要在在 /etc/cloud/cloud.cfg中将cloud_init_modules中的下面两行删除
+-set_hostname
+- [update_hostname,once-per-instance]
+</code></pre>
+<p>linux centos yum报错 To address this issue please refer to the below wiki article 解决方法</p>
 <img src="img/image-20220101212939753.png" alt="image-20220101212939753" style="zoom:33%;float:left" />
 <p>报错原因：国外<a href="https://so.csdn.net/so/search?q=yum">yum</a>镜像源 国内下载不了 修改为国内阿里yum镜像源</p>
 <p>解决方法：</p>
@@ -163,7 +207,7 @@ vim CentOS-Base.repo
 #用vim的查找替换命令 将$releasever都替换为7（因为我的是centos7）
 %s/\$releasever/7/g
 </code></pre>
-<h4 id="vim-字符串替换"><a class="header" href="#vim-字符串替换">Vim 字符串替换</a></h4>
+<h4 id="4vim-字符串替换"><a class="header" href="#4vim-字符串替换">4.Vim 字符串替换</a></h4>
 <p>查找和替换是任意一款文本编辑器的一组常见和必备功能。下面就来讲解 Vim 中的字符串替换功能。</p>
 <p>Vim 使用以下命令结构实现替换功能。</p>
 <pre><code>:&lt;range&gt; s/&lt;search_string&gt;/&lt;replace_string&gt;/&lt;modifier&gt;
@@ -185,13 +229,13 @@ vim CentOS-Base.repo
 </ul>
 </li>
 </ul>
-<p>NameNode无法启动，报错原因：</p>
+<h4 id="5namenode无法启动报错原因"><a class="header" href="#5namenode无法启动报错原因">5.NameNode无法启动，报错原因：</a></h4>
 <p>1、 java.net.BindException: Port in use: master:9001</p>
 <p>2、Caused by: java.net.BindException: Cannot assign requested address</p>
 <img src="img/image-20220101223611130.png" alt="image-20220101223611130" style="zoom:33%;float:left;" />
 <p>端口被占用是直接原因，但起因是不能分配所需的地址，跟地址有关的就联想到 /etc/hosts文件</p>
 <p>云服务器的IP要换成内网的IP，内网可以比作一个局域网。 </p>
-<p>hadoop集群部署上后，在服务器中运行hadoop自带的jar包中的实例报错</p>
+<h4 id="6hadoop集群部署上后在服务器中运行hadoop自带的jar包中的实例报错"><a class="header" href="#6hadoop集群部署上后在服务器中运行hadoop自带的jar包中的实例报错">6.hadoop集群部署上后，在服务器中运行hadoop自带的jar包中的实例报错</a></h4>
 <p><img src="img/image-20220103164220531.png" alt="image-20220103164220531" /></p>
 <p>解决方法：按错误提示，在mapred-site.xml配置文件中添加hadoop根目录</p>
 <p>1.先运行hadoop classpath得到classpath</p>
@@ -204,6 +248,29 @@ vim CentOS-Base.repo
 </code></pre>
 <p>配置结束关闭mapred-site.xml</p>
 <p>重新启动集群，再在share文件中运行</p>
+<h4 id="7-warning-remote-host-identification-has-changed"><a class="header" href="#7-warning-remote-host-identification-has-changed">7. WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!</a></h4>
+<p>报错如下</p>
+<pre><code>@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ZKK01: @    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
+ZKK01: @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ZKK01: IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!
+ZKK01: Someone could be eavesdropping on you right now (man-in-the-middle attack)!
+ZKK01: It is also possible that a host key has just been changed.
+ZKK01: The fingerprint for the ECDSA key sent by the remote host is
+...
+</code></pre>
+<p><strong>原因：</strong></p>
+<p>因为服务器的ip发生变更了
+第一次SSH连接时，会生成一个认证，储存在客户端（也就是用SSH连线其他电脑的那个，自己操作的那个）中的known_hosts，但是如果服务器验证过了，认证资讯当然也会更改，服务器端与客户端不同时，就会跳出错误啦。</p>
+<p><strong>解决办法：</strong></p>
+<pre><code class="language-shell">输入命令：ssh-keygen -R +输入服务器的IP
+</code></pre>
+<h4 id="8permission-denied-publickeygssapi-keyexgssapi-with-micpassword问题解决"><a class="header" href="#8permission-denied-publickeygssapi-keyexgssapi-with-micpassword问题解决">8.Permission denied (publickey,gssapi-keyex,gssapi-with-mic,password)问题解决</a></h4>
+<p>经过排查发现是没有设置免密登录，解决方案如下：</p>
+<pre><code class="language-shell">ssh-keygen -t rsa
+cat ~/.ssh/id_rsa.pub &gt;&gt; ~/.ssh/authorized_keys
+chmod 0600 ~/.ssh/authorized_keys
+</code></pre>
 
                     </main>
 
