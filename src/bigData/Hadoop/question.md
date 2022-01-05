@@ -1,6 +1,6 @@
 #### 1.用公司电脑ssh服务器，突然连接不上了（之前可以）
 
-<img src="../../../docs/bigData/Hadoop/img/image-20211229153341947.png" alt="image-20211229153341947" style="zoom:50%;" />
+<img src="img/image-20211229153341947.png" alt="image-20211229153341947" style="zoom:50%;" />
 
 ssh -v root@110.42.160.28 ,报错信息如下
 
@@ -26,13 +26,13 @@ sshd -t
 systemctl restart sshd
 ```
 
-<img src="../../../docs/bigData/Hadoop/img/image-20211229162400042.png" alt="image-20211229162400042" style="zoom:50%;" />
+<img src="img/image-20211229162400042.png" alt="image-20211229162400042" style="zoom:50%;" />
 
 后能成功登录
 
 #### 2. 伪分布式群起失败。
 
-![image-20211229164421126](../../../docs/bigData/Hadoop/img/image-20211229164421126.png)
+![image-20211229164421126](img/image-20211229164421126.png)
 
 解决方法:
 
