@@ -145,7 +145,7 @@
                 <div id="content" class="content">
                     <main>
                         <h4 id="1用公司电脑ssh服务器突然连接不上了之前可以"><a class="header" href="#1用公司电脑ssh服务器突然连接不上了之前可以">1.用公司电脑ssh服务器，突然连接不上了（之前可以）</a></h4>
-<img src="../../../docs/bigData/Hadoop/img/image-20211229153341947.png" alt="image-20211229153341947" style="zoom:50%;" />
+<img src="img/image-20211229153341947.png" alt="image-20211229153341947" style="zoom:50%;" />
 <p>ssh -v root@110.42.160.28 ,报错信息如下</p>
 <pre><code class="language-shell">C:\02_projects\myGit\learning&gt;ssh -v root@110.42.160.28                                                                                                  
 OpenSSH_for_Windows_8.1p1, LibreSSL 3.0.2
@@ -162,10 +162,10 @@ sshd -t
 #重启sshd
 systemctl restart sshd
 </code></pre>
-<img src="../../../docs/bigData/Hadoop/img/image-20211229162400042.png" alt="image-20211229162400042" style="zoom:50%;" />
+<img src="img/image-20211229162400042.png" alt="image-20211229162400042" style="zoom:50%;" />
 <p>后能成功登录</p>
 <h4 id="2-伪分布式群起失败"><a class="header" href="#2-伪分布式群起失败">2. 伪分布式群起失败。</a></h4>
-<p><img src="../../../docs/bigData/Hadoop/img/image-20211229164421126.png" alt="image-20211229164421126" /></p>
+<p><img src="img/image-20211229164421126.png" alt="image-20211229164421126" /></p>
 <p>解决方法:</p>
 <p>可以把/home/hadoop/.ssh/known_hosts文件删了，然后重新生成配对密钥即可</p>
 <pre><code class="language-shell">sudo apt-get openssh-server

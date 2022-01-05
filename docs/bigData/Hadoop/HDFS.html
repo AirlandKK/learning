@@ -144,7 +144,8 @@
 
                 <div id="content" class="content">
                     <main>
-                        <img src="img/image-20220103202221934.png" alt="HDFS概览" style="zoom:70%;" />
+                        <p>[TOC]</p>
+<img src="img/image-20220103202221934.png" alt="HDFS概览" style="zoom:70%;float:left" />
 <h1 id="第一章-hdfs概述"><a class="header" href="#第一章-hdfs概述">第一章 HDFS概述</a></h1>
 <h2 id="11hdfs产出背景及定义"><a class="header" href="#11hdfs产出背景及定义">1.1HDFS产出背景及定义</a></h2>
 <ol>
@@ -177,12 +178,12 @@
 </ol>
 <p><u>缺点</u>：</p>
 <ol>
-<li>
-<p>低时间延迟的访问</p>
+<li>低时间延迟的访问</li>
+</ol>
 <ul>
 <li>要求低时间延迟的数据访问的应用，不适合在HDFS上运行，比如毫秒级的存储数据。HDFS是提高数据吞吐量的应用优化的，但可能会以提高时间延迟为代价。</li>
 </ul>
-</li>
+<ol start="2">
 <li>
 <p>无法高效的对大量小文件进行存储：</p>
 <ul>
@@ -233,8 +234,6 @@
 <li>执行数据块的读/写操作。</li>
 </ol>
 <img src="img/image-20220104210422466.png" alt="image-20220104210422466" style="zoom:50%" />
-</li>
-<li>
 <p>Client：就是客服端</p>
 <ol>
 <li>文件切分：文件上传HDFS的时候，Client将文件切分成一个一个的Block，然后进行上传；</li>
@@ -252,6 +251,200 @@
 </ol>
 </li>
 </ol>
+<h2 id="14hdfs-文件块大小面试重点"><a class="header" href="#14hdfs-文件块大小面试重点">1.4HDFS 文件块大小（面试重点）</a></h2>
+<p>​	HDFS中的文件再物理上是分块存储（Block），块的大小可以通过配置参数（dfs.blocksize）来规定，<strong>默认大小在Hadoop2.x/3.x版本中是128M,1.X版本中是64M。</strong></p>
+<ul>
+<li>如果寻址时间约为10ms，即查找到目标block的时间为10ms。</li>
+<li>寻址时间为传输时间的1%时，则为最佳状态。因此，传输时间=10ms/0.01=1000ms=1s</li>
+<li>而目前磁盘的传输速率普遍为100MB/s（固态硬盘200~300M）
+<ul>
+<li><u>因此：普通硬盘的设置成128M</u></li>
+<li><u>固态硬盘块大小可以设置成256M</u></li>
+</ul>
+</li>
+</ul>
+<ol>
+<li>
+<p>为什么块的大小不能设置太小，也不能设置太大？</p>
+<ol>
+<li>HFDFS的块<strong>设置太小，会增加寻址时间</strong>，程序一直在找块的开始位置；</li>
+<li>如果块设置的<strong>太大</strong>，从<strong>磁盘传输数据的时间</strong>会明显** **。导致程序在处理这块数据时，会非常慢。</li>
+</ol>
+<p>总结：HDFS块的大小设置主要取决于磁盘传输速率。</p>
+</li>
+</ol>
+<h1 id="第二章-hdfs的shell操作开发重点"><a class="header" href="#第二章-hdfs的shell操作开发重点">第二章 HDFS的Shell操作（开发重点）</a></h1>
+<h2 id="21-基本语法"><a class="header" href="#21-基本语法">2.1 基本语法</a></h2>
+<p>hadoop fs 具体命令 OR hdfs dfs 具体命令</p>
+<p>两个完全相同</p>
+<h2 id="22-命令大全"><a class="header" href="#22-命令大全">2.2 命令大全</a></h2>
+<pre><code class="language-shell">[root@ZKK01 ~]# hadoop fs
+2022-01-05 15:11:03,273 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Usage: hadoop fs [generic options]
+        [-appendToFile &lt;localsrc&gt; ... &lt;dst&gt;]
+        [-cat [-ignoreCrc] &lt;src&gt; ...]
+        [-checksum [-v] &lt;src&gt; ...]
+        [-chgrp [-R] GROUP PATH...]
+        [-chmod [-R] &lt;MODE[,MODE]... | OCTALMODE&gt; PATH...]
+        [-chown [-R] [OWNER][:[GROUP]] PATH...]
+        [-concat &lt;target path&gt; &lt;src path&gt; &lt;src path&gt; ...]
+        [-copyFromLocal [-f] [-p] [-l] [-d] [-t &lt;thread count&gt;] &lt;localsrc&gt; ... &lt;dst&gt;]
+        [-copyToLocal [-f] [-p] [-ignoreCrc] [-crc] &lt;src&gt; ... &lt;localdst&gt;]
+        [-count [-q] [-h] [-v] [-t [&lt;storage type&gt;]] [-u] [-x] [-e] [-s] &lt;path&gt; ...]
+        [-cp [-f] [-p | -p[topax]] [-d] &lt;src&gt; ... &lt;dst&gt;]
+        [-createSnapshot &lt;snapshotDir&gt; [&lt;snapshotName&gt;]]
+        [-deleteSnapshot &lt;snapshotDir&gt; &lt;snapshotName&gt;]
+        [-df [-h] [&lt;path&gt; ...]]
+        [-du [-s] [-h] [-v] [-x] &lt;path&gt; ...]
+        [-expunge [-immediate] [-fs &lt;path&gt;]]
+        [-find &lt;path&gt; ... &lt;expression&gt; ...]
+        [-get [-f] [-p] [-ignoreCrc] [-crc] &lt;src&gt; ... &lt;localdst&gt;]
+        [-getfacl [-R] &lt;path&gt;]
+        [-getfattr [-R] {-n name | -d} [-e en] &lt;path&gt;]
+        [-getmerge [-nl] [-skip-empty-file] &lt;src&gt; &lt;localdst&gt;]
+        [-head &lt;file&gt;]
+        [-help [cmd ...]]
+        [-ls [-C] [-d] [-h] [-q] [-R] [-t] [-S] [-r] [-u] [-e] [&lt;path&gt; ...]]
+        [-mkdir [-p] &lt;path&gt; ...]
+        [-moveFromLocal [-f] [-p] [-l] [-d] &lt;localsrc&gt; ... &lt;dst&gt;]
+        [-moveToLocal &lt;src&gt; &lt;localdst&gt;]
+        [-mv &lt;src&gt; ... &lt;dst&gt;]
+        [-put [-f] [-p] [-l] [-d] [-t &lt;thread count&gt;] &lt;localsrc&gt; ... &lt;dst&gt;]
+        [-renameSnapshot &lt;snapshotDir&gt; &lt;oldName&gt; &lt;newName&gt;]
+        [-rm [-f] [-r|-R] [-skipTrash] [-safely] &lt;src&gt; ...]
+        [-rmdir [--ignore-fail-on-non-empty] &lt;dir&gt; ...]
+        [-setfacl [-R] [{-b|-k} {-m|-x &lt;acl_spec&gt;} &lt;path&gt;]|[--set &lt;acl_spec&gt; &lt;path&gt;]]
+        [-setfattr {-n name [-v value] | -x name} &lt;path&gt;]
+        [-setrep [-R] [-w] &lt;rep&gt; &lt;path&gt; ...]
+        [-stat [format] &lt;path&gt; ...]
+        [-tail [-f] [-s &lt;sleep interval&gt;] &lt;file&gt;]
+        [-test -[defswrz] &lt;path&gt;]
+        [-text [-ignoreCrc] &lt;src&gt; ...]
+        [-touch [-a] [-m] [-t TIMESTAMP (yyyyMMdd:HHmmss) ] [-c] &lt;path&gt; ...]
+        [-touchz &lt;path&gt; ...]
+        [-truncate [-w] &lt;length&gt; &lt;path&gt; ...]
+        [-usage [cmd ...]]
+</code></pre>
+<h2 id="23-常用实操命令"><a class="header" href="#23-常用实操命令">2.3 常用实操命令</a></h2>
+<h3 id="231-准备工作"><a class="header" href="#231-准备工作">2.3.1 准备工作</a></h3>
+<ol>
+<li>启动Hadoop集群（方便后续测试）</li>
+</ol>
+<pre><code class="language-shell">[root@ZKK01 hadoop-3.3.1]# sbin/start-all.sh
+</code></pre>
+<ol start="2">
+<li>-help：输出这个命令参数的帮助，也可以去百度</li>
+</ol>
+<pre><code class="language-shell">[root@ZKK01 hadoop-3.3.1]# hadoop fs -help rm
+</code></pre>
+<ol start="3">
+<li>创建/sanguo文件夹</li>
+</ol>
+<pre><code class="language-shell">[root@ZKK01 hadoop-3.3.1]# hadoop fs -mkdir /sanguo
+</code></pre>
+<h3 id="232-上传"><a class="header" href="#232-上传">2.3.2 上传</a></h3>
+<ol>
+<li>
+<p>-moveFromLocal 从本地<u>剪切</u>粘贴到HDFS</p>
+<pre><code class="language-shell">[root@ZKK01 hadoop-3.3.1]# vim shuguo.txt
+输入： shuguo
+[root@ZKK01 hadoop-3.3.1]# hadoop fs -moveFromLocal ./shuguo.txt /sanguo
+</code></pre>
+</li>
+<li>
+<p>-copyFromLocal 从本地文件系统拷贝文件到HDFS路径去</p>
+</li>
+<li>
+<p>-put 等同于copyFromLocal，生产环境更习惯用put</p>
+<pre><code class="language-shell">hadoop fs -put ./wuguo.txt /sanguo
+</code></pre>
+</li>
+<li>
+<p>-appendToFile 追加一个文件到已经存在的文件末尾</p>
+<pre><code class="language-shell">vim liubei.txt
+输入： liubei
+
+hadoop fs -appendToFile liubei.txt /sanguo/shuguo.txt
+</code></pre>
+</li>
+</ol>
+<h3 id="233-下载"><a class="header" href="#233-下载">2.3.3 下载</a></h3>
+<ol>
+<li>
+<p>-copyToLocal：从HDFS拷贝到本地</p>
+</li>
+<li>
+<p>-get：等同于copyToLocal，生产环境更习惯用get</p>
+<pre><code class="language-shell">hadoop fs -get /sanguo/shuguo.txt ./shuguo2.txt
+</code></pre>
+</li>
+</ol>
+<h3 id="234-hdfs-直接操作"><a class="header" href="#234-hdfs-直接操作">2.3.4 HDFS 直接操作</a></h3>
+<ol>
+<li>
+<p>-ls： 显示目录信息</p>
+<pre><code class="language-shell">hadoop fs -ls /sanguo
+</code></pre>
+</li>
+<li>
+<p>-cat：显示文件内容</p>
+<pre><code class="language-shell">hadoop fs -cat /sanguo/shuguo.txt
+</code></pre>
+</li>
+<li>
+<p>-chgrp、-chmod、-chown：Linux文件系统中的用法一样，修改文件所属权限</p>
+<pre><code class="language-shell">hadoop fs -chmod 666 /sanguo/shuguo.txt
+hadoop fs -chmod ZKK01:ZKK01 /sanguo/shuguo.txt
+</code></pre>
+</li>
+<li>
+<p>-mkdir：创建路径</p>
+<pre><code class="language-shell">hadoop fs -mkdir /jinguo
+</code></pre>
+</li>
+<li>
+<p>-cp：从HDFS的一个路径拷贝到HDFS的另一个路径</p>
+<pre><code class="language-shell">hadoop fs -cp /sanguo/shuguo.txt /jinguo
+</code></pre>
+</li>
+<li>
+<p>-mv：在HDFS目录中移动文件</p>
+<pre><code class="language-shell">hadoop fs -mv /sanguo/wuguo.txt /jinguo
+hadoop fs -mv /sanguo/weiguo.txt /jinguo
+</code></pre>
+</li>
+<li>
+<p>-tail：显示一个文件的末尾1kb的数据</p>
+<pre><code class="language-shell">hadoop fs -tail /jinguo/shuguo.txt
+</code></pre>
+</li>
+<li>
+<p>-rm：删除文件或文件夹</p>
+<pre><code class="language-shell">hadoop -rm /sanguo/shuguo.txt
+</code></pre>
+</li>
+<li>
+<p>-rm -r：递归删除目录及目录里面的内容</p>
+<pre><code class="language-shell">hadoop fs -rm -r /sanguo
+</code></pre>
+</li>
+<li>
+<p>-du：统计文件夹的大小信息</p>
+<pre><code class="language-shell">hadoop fs -du -s -h /jinguo #只列出文件夹总大小
+hadoop fs -du -h /jinguo	#文件夹内内容详细信息
+</code></pre>
+</li>
+<li>
+<p>-setrep：设置HDFS中文件的副本数量</p>
+<pre><code class="language-shell">hadoop fs -setrep 10 /jinguo/shuguo.txt
+</code></pre>
+<p><img src="img/image-20220105182207891.png" alt="image-20220105182207891" /></p>
+<p><img src="img/image-20220105182227695.png" alt="image-20220105182227695" /></p>
+<p>这里设置的副本数只是记录在NameNode的元数据中，是否真的会有这么多副本，还得看DataNode的数量。因为目前只有3台设备，最多也就3个副本，只有节点数的增加到10台时，副本数才能达到10。</p>
+</li>
+</ol>
+<h1 id="第三章-hdfs的api操作"><a class="header" href="#第三章-hdfs的api操作">第三章 HDFS的API操作</a></h1>
+<h2 id="31客户端环境准备"><a class="header" href="#31客户端环境准备">3.1客户端环境准备</a></h2>
 
                     </main>
 
