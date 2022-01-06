@@ -173,6 +173,13 @@ export JAVA_LIBRARY_PATH=$HADOOP_HOME/lib/native:$JAVA_LIBRARY_PATH
 source /etc/profile
 ```
 
+#### 3.进入这三个文件 每个文件都添加![image-20220106211454302](img/image-20220106211454302.png)
+
+```shell
+vim hadoop-env.sh
+ export JAVA_HOME=/root/apps/jdk(JDK安装目录)
+```
+
 # 集群配置
 
 ![image-20211228203703927](img/image-20211228203703927.png)
@@ -211,7 +218,7 @@ source /etc/profile
     <!--配置HDFS网页登录使用的静态用户为zkk，可以不配置-->
      <property>
         <name>hadoop.http.staticuser.user</name>
-        <value>zkk</value>
+        <value>ZKK01</value>
     </property>
 </configuration>
 

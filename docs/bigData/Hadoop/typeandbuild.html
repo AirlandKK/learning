@@ -268,6 +268,10 @@ export JAVA_LIBRARY_PATH=$HADOOP_HOME/lib/native:$JAVA_LIBRARY_PATH
 <h4 id="2-使环境变量生效"><a class="header" href="#2-使环境变量生效">2. 使环境变量生效</a></h4>
 <pre><code class="language-she'l">source /etc/profile
 </code></pre>
+<h4 id="3进入这三个文件-每个文件都添加"><a class="header" href="#3进入这三个文件-每个文件都添加">3.进入这三个文件 每个文件都添加<img src="img/image-20220106211454302.png" alt="image-20220106211454302" /></a></h4>
+<pre><code class="language-shell">vim hadoop-env.sh
+ export JAVA_HOME=/root/apps/jdk(JDK安装目录)
+</code></pre>
 <h1 id="集群配置"><a class="header" href="#集群配置">集群配置</a></h1>
 <p><img src="img/image-20211228203703927.png" alt="image-20211228203703927" /></p>
 <p>也可以都配置在同一台机子上如果内存够的话..</p>
@@ -299,7 +303,7 @@ export JAVA_LIBRARY_PATH=$HADOOP_HOME/lib/native:$JAVA_LIBRARY_PATH
     &lt;!--配置HDFS网页登录使用的静态用户为zkk，可以不配置--&gt;
      &lt;property&gt;
         &lt;name&gt;hadoop.http.staticuser.user&lt;/name&gt;
-        &lt;value&gt;zkk&lt;/value&gt;
+        &lt;value&gt;ZKK01&lt;/value&gt;
     &lt;/property&gt;
 &lt;/configuration&gt;
 

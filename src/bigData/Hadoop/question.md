@@ -193,3 +193,53 @@ ssh-keygen -t rsa
 cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 chmod 0600 ~/.ssh/authorized_keys
 ```
+
+#### 9.HDFS服务器使用命令可以上传文件,但客户端上传失败问题FILE ~ COULD ONLY BE WRITTEN TO 0 OF THE 1 MINREPLICATION NODES.
+
+![image-20220106195248136](img/image-20220106195248136.png)
+
+然后接下来我就在我的服务器里上传了一个文件试试，发现上传成功，没什么问题
+
+为什么服务器里可以成功上传文件，而客户端却不行呢(客户端能上传文件，但是只有一个空壳，内部并没有数据)？但是客户端又可以成功创建文件夹目录呀！？
+
+**思考：我们的文件目录，文件名是存放在哪里？而我们的具体数据又是写在哪里？**
+
+> *NameNode节点存放的是文件目录，也就是文件夹、文件名称，本地可以通过公网访问 NameNode，所以可以进行文件夹的创建，当上传文件需要写入数据到DataNode时，NameNode 和DataNode 是通过局域网进行通信，NameNode返回地址为 DataNode 的私有 IP，本地无法访问*
+
+**解决方案**
+
+返回的IP地址无法返回公网IP，只能`返回主机名`，通过主机名与公网地址的映射便可以访问到DataNode节点，问题将解决。
+
+由于`代码的设置的优先级为最高`，所以直接进行代码的设置。
+
+```java
+Configuration conf = new Configuration();
+conf.set("dfs.client.use.datanode.hostname", "true");//添加此配置信息即可
+FileSystem fs = FileSystem.get(new URI("hdfs://host:9000"), conf, "root");
+```
+
+> 注意：
+>
+> 1. 主机名我们可以通过下面的命令查看：
+>
+>    ```bash
+>       hadoop dfsadmin -report
+>    ```
+>
+> 2. 本地还需要配置一下DNS域名映射，在`C:\Windows\System32\drivers\etc的hosts文件中`配置
+>
+> 3. 腾讯云等服务器还需要配置一下我们的安全组、防火墙9866
+>
+> 4. 接下来就是我们的防火墙开放一下端口就行了
+
+附：当然我们也可以直接在配置文件(项目下的配置文件和服务器配置文件都行)中进行一个简单配置：
+
+```xml
+<property>
+    <name>dfs.client.use.datanode.hostname</name>
+    <value>true</value>
+    <description>only cofig in clients</description>
+</property>
+
+```
+
