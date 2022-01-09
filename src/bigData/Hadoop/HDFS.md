@@ -308,3 +308,88 @@ Usage: hadoop fs [generic options]
 
 ## 3.1客户端环境准备
 
+1. windows去：https://github.com/kontext-tech/winutils 下载对应版本的编译好的bin文件替换原来安装在windows里的hadoop文件的bin
+
+2. 将bin文件里的hadoop.dll粘贴到system32里
+3. 创建maven项目导入相关相关依赖
+
+## 3.2HDFS-API相关操作
+
+> github上我仓库的hadoopLearning :<https://github.com/AirlandKK/hadoopLearning>  
+
+# 第四章 HDFS的读写流程（面试重点）
+
+## 4.1 HDFS写数据流程
+
+### 4.1.1 剖析文件写入
+
+![HDFSwrite](img/HDFSwrite.png)
+
+1、客户端通过Distributed FileSystem模块向namenode请求上传文件到/user/atguigu/ss.avi这个路径文件
+
+2、校验文件是否存在，如果存在就会报目录存在这个错误，如果不存在则相应可以上传文件
+
+3、客户端请求第一个Block（0-128M）上传到那几个DataNode服务器上
+
+4、返回dn1，dn2，dn3节点，表示这三个节点可以存储数据（通过负载量和距离来选择dn）
+
+5、客户端通过调用FSDataOutPutStream模块请求dn1上传数据，dn1收到请求会继续调用dn2，然后dn2调用dn3，将这个通信          管道建立完成。
+
+6、dn1、dn2、dn3逐级应答客户端。
+
+7、客户端开始往dn1上传第一个Block（先从磁盘读取数据放到一个本地内存缓存），以Packet为单位，dn1收到一个Packet就          会传给dn2，dn2传给dn3；dn1每传一个packet会放入一个应答队列等待应答。
+
+      当一个Block传输完成之后，客户端再次请求NameNode上传第二个Block的服务器。（重复执行3-7步）。
+
+8、告诉namenode传输完成
+
+### 4.1.2 网络拓扑-节点距离计算
+
+​	在HDFS写数据的过程中，NameNode会选择距离待上传数据最近距离的DataNode接收数据。那么这个最近距离怎么计算呢？  
+
+​	**节点距离：两个节点到达最近的共同祖先的距离总和。**
+
+把n当作服务器，把机架r看作交换机，把d看作机房，把最外面看作互联网，一条线计为1
+
+![image-20220108183607093](img/image-20220108183607093.png)
+
+### 4.1.3 机架感知（副本存储节点选择）
+
+1. 机架感知说明 
+
+   - > 官网说明：https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-hdfs/HdfsDesign.html
+     >
+     > For the common case, when the replication factor is three, HDFS’s placement policy is to put **one replica <u>on the local</u> machine** if the writer is on a datanode, otherwise on a random datanode in the same rack as that of the writer, **another replica on a node in a <u>different (remote) rack</u>, and the last on a different node in the <u>same remote</u> rack.** This policy cuts the inter-rack write traffic which generally improves write performance. The chance of rack failure is far less than that of node failure; this policy does not impact data reliability and availability guarantees. However, it does not reduce the aggregate network bandwidth used when reading data since a block is placed in only two unique racks rather than three. With this policy, the replicas of a block do not evenly distribute across the racks. Two replicas are on different nodes of one rack and the remaining replica is on a node of one of the other racks. This policy improves write performance without compromising data reliability or read performance.
+
+   - 第一个副本在Client所处的节点上。如果客户端在集群外，随机选一个，第二个副本在另一个机架的随机一个节点，第三个副本在第二个副本所在机架的随即节点。（<u>保持可靠性兼顾效率</u>）
+
+2. 源码说明
+
+   - Crtl+n 查找BlockPlacementPolicyDefault，在该类中chooseTargetInOrder方法。
+
+
+
+## 4.2 HDFS读数据流程
+
+![img](img/20200410190716840.png)
+
+1、客户端通过Distributed FileSystem（客户端对象）向NameNode请求下载文件，创建一个FSDataInputStream（流对象）。（<u>Namenode要判断该请求是否有权限、文件是否存在</u>）
+
+2、NameNode通过查询元数据，找到文件块所在的DataNode地址，返回目标文件的元数据。
+
+3、挑选一台DataNode（就近原则，然后随机）服务器，请求读取数据。（<u>判断节点距离、也会判断负载均衡</u>）
+
+4、DataNode开始传输数据给客户端（从磁盘里面读取数据输入流，以Packet为单位来做校验）。
+
+5、客户端以Packet为单位接收，先在本地缓存，然后写入目标文件。
+
+6、最后会关闭资源
+
+> PS ：HDFS的读的方式都是**串行读**！只能串行读！为了保证每一个任务的传输效率，且追求稳定可靠
+
+
+
+
+
+# 第五章 NameNode和SecondaryNameNode
+
