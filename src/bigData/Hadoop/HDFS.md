@@ -393,3 +393,50 @@ Usage: hadoop fs [generic options]
 
 # 第五章 NameNode和SecondaryNameNode
 
+## 5.1 NN和2NN的关系
+
+```
+内存：
+	好处：计算快
+	坏处：可靠性差
+磁盘：
+	好处：可靠性高
+	坏处：计算慢
+
+内存+磁盘=》效率低
+		fsImage 存储数据（如果是随机读写效率 a=10 a+10=>a=20）
+		对历史数据的改写效率很低，
+		但是可以追加
+		Edits追加=>a+10 a-30 a*20 （只记录过程）
+		
+		
+fsImage存储数据+Edits追加=内存  (2NN可以帮助这两个文件定期进行合并)
+```
+
+<img src="img/image-20220110165752038.png" alt="image-20220110165752038" style="zoom:30%;" />
+
+工作机制图：
+
+![2NN工作机制](img/image-20220111140920299.png)
+
+1 第一阶段： namenode 启动
+1）第一次启动 namenode 格式化后， 创建 fsimage 和 edits 文件。如果不是第一次启动，直接加载编辑日志和镜像文件到内存。
+2） 客户端对元数据进行增删改的请求。
+3） namenode 记录操作日志，更新滚动日志。
+4） namenode 在内存中对数据进行增删改查。
+
+2 第二阶段： Secondary NameNode 工作
+1） Secondary NameNode 询问 namenode 是否需要 checkpoint。 直接带回 namenode 是否检查结果。
+2） Secondary NameNode 请求执行 checkpoint。
+3） namenode 滚动正在写的 edits 日志。
+4）将滚动前的编辑日志和镜像文件拷贝到 Secondary NameNode。
+5） Secondary NameNode 加载编辑日志和镜像文件到内存，并合并。
+6） 生成新的镜像文件 fsimage.chkpoint。
+7） 拷贝 fsimage.chkpoint 到 namenode。
+8） namenode 将 fsimage.chkpoint 重新命名成 fsimage。
+
+> ps：定时时间默认1小时，Edits数据满了默认100万条
+
+## 5.2 Fsimage（镜像文件）和Edits（编辑日志）解析
+
+NameNode被格式化之后，将在/hadoop-3.1.3/data/tmp/dfs/name/current目录中产生如下文件
