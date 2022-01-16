@@ -413,11 +413,11 @@ Usage: hadoop fs [generic options]
 fsImage存储数据+Edits追加=内存  (2NN可以帮助这两个文件定期进行合并)
 ```
 
-<img src="img/image-20220110165752038.png" alt="image-20220110165752038" style="zoom:30%;" />
+
 
 工作机制图：
 
-![2NN工作机制](img/image-20220111140920299.png)
+![image-20220114120035463](img/image-20220114120035463.png)
 
 1 第一阶段： namenode 启动
 1）第一次启动 namenode 格式化后， 创建 fsimage 和 edits 文件。如果不是第一次启动，直接加载编辑日志和镜像文件到内存。
@@ -437,6 +437,190 @@ fsImage存储数据+Edits追加=内存  (2NN可以帮助这两个文件定期进
 
 > ps：定时时间默认1小时，Edits数据满了默认100万条
 
+**NN和2NN工作机制详解：**
+
+```
+Fsimage：namenode内存中元数据序列化后形成的文件。 
+Edits：记录客户端更新元数据信息的每一步操作（可通过Edits运算出元数据）。 
+namenode启动时，先滚动edits并生成一个空的edits.inprogress，然后加载edits和fsimage到内存中，此时namenode内存就持有最新的元数据信息。client开始对namenode发送元数据的增删改查的请求，这些请求的操作首先会被记录的edits.inprogress中（查询元数据的操作不会被记录在edits中，因为查询操作不会更改元数据信息），如果此时namenode挂掉，重启后会从edits中读取元数据的信息。然后，namenode会在内存中执行元数据的增删改查的操作。 
+由于edits中记录的操作会越来越多，edits文件会越来越大，导致namenode在启动加载edits时会很慢，所以需要对edits和fsimage进行合并（所谓合并，就是将edits和fsimage加载到内存中，照着edits中的操作一步步执行，最终形成新的fsimage）。secondarynamenode的作用就是帮助namenode进行edits和fsimage的合并工作。 
+secondarynamenode首先会询问namenode是否需要checkpoint（触发checkpoint需要满足两个条件中的任意一个，定时时间到和edits中数据写满了）。直接带回namenode是否检查结果。secondarynamenode执行checkpoint操作，首先会让namenode滚动edits并生成一个空的edits.inprogress，滚动edits的目的是给edits打个标记，以后所有新的操作都写入edits.inprogress，其他未合并的edits和fsimage会拷贝到secondarynamenode的本地，然后将拷贝的edits和fsimage加载到内存中进行合并，生成fsimage.chkpoint，然后将fsimage.chkpoint拷贝给namenode，重命名为fsimage后替换掉原来的fsimage。namenode在启动时就只需要加载之前未合并的edits和fsimage即可，因为合并过的edits中的元数据信息已经被记录在fsimage中。
+```
+
+
+
 ## 5.2 Fsimage（镜像文件）和Edits（编辑日志）解析
 
+- 概念
+
 NameNode被格式化之后，将在/hadoop-3.1.3/data/tmp/dfs/name/current目录中产生如下文件
+
+```shell
+[root@ZKK01 current]# ll
+total 1044
+-rw-r--r-- 1 root root     640 Jan  6 21:18 edits_0000000000000000001-0000000000000000009
+-rw-r--r-- 1 root root 1048576 Jan  6 21:18 edits_inprogress_0000000000000000010
+-rw-r--r-- 1 root root     399 Jan  6 21:01 fsimage_0000000000000000000
+-rw-r--r-- 1 root root      62 Jan  6 21:01 fsimage_0000000000000000000.md5
+-rw-r--r-- 1 root root       3 Jan  6 21:18 seen_txid
+-rw-r--r-- 1 root root     215 Jan  6 21:01 VERSION
+```
+
+1. Fsimage文件：HDFS文件系统元数据的一个**永久性的检查点**，其中包含HDFS文件系统的所有目录和文件inode的序列化信息
+2. Edits文件：存放HDFS文件系统的所有更新操作的路径，文件系统客户端执行的所有写操作首先会被记录到Edits文件中。
+3. seen_txid文件保存的是一个数字，就是最后一个edits_的数字
+4. 每次NameNode启动的时候都会将fsimage文件读入内存，加载edits里面的更新操作，保证内存中的元数据信息是最新的、同步的，可以看成NameNode启动的时候就将fsimage和edits文件进行了合并。
+
+
+
+- oiv查看fsimage文件
+
+  - 查看oiv和oev命令 
+
+    ```shell
+    [root@ZKK01 current]# hdfs
+    oiv               apply the offline fsimage viewer to an fsimage
+    oev               apply the offline edits viewer to an edits file
+    ```
+
+  - 基本语法
+
+    ```sehll
+    hdfs oiv -p 文件类型 -i镜像文件 -o 转换后文件输出路径  
+    ```
+
+  - 举个例子
+
+    ```
+    [root@ZKK01 current]# pwd
+    /opt/software/hadoop-3.3.1/data/tmp/dfs/name/current
+    [root@ZKK01 current]# hdfs oiv -p XML -i fsimage_0000000000000000000 -o /opt/software/hadoop-3.3.1/fsimage.xml
+    2022-01-14 13:39:03,374 INFO offlineImageViewer.FSImageHandler: Loading 2 strings
+    2022-01-14 13:39:03,546 INFO namenode.FSDirectory: GLOBAL serial map: bits=29 maxEntries=536870911
+    2022-01-14 13:39:03,546 INFO namenode.FSDirectory: USER serial map: bits=24 maxEntries=16777215
+    2022-01-14 13:39:03,546 INFO namenode.FSDirectory: GROUP serial map: bits=24 maxEntries=16777215
+    2022-01-14 13:39:03,546 INFO namenode.FSDirectory: XATTR serial map: bits=24 maxEntries=16777215
+    [root@ZKK01 current]# cat /opt/software/hadoop-3.3.1/fsimage.xml 
+    ```
+
+  - 命令：sz 文件名 可以存到windows
+
+    ```shell
+    [root@ZKK01 current]# sz /opt/software/hadoop-3.3.1/fsimage.xml 
+    ```
+
+- oev查看edits文件
+
+  - 基本语法
+
+    ```shell
+    hdfs oev -p 文件类型 -i编辑日志 -o 转换后文件输出路径
+    ```
+
+  - 举个例子
+
+    ```shell
+    [root@ZKK01 current]# hdfs oev -p XML -i edits_0000000000000000001-0000000000000000009 -o /opt/software/hadoop-3.3.1/edits.xml
+    ```
+
+- 思考namenode怎么确定下次合并那些edits？
+
+  - 将大于fsimage最后序号的edits文件合并
+
+## 5.3 CheckPoint时间设置
+
+1. 通常情况下，SecondaryNameNode每隔一小时执行一次。 
+
+   [hdfs-default.xml]
+
+   ```xml
+   <property>
+     <name>dfs.namenode.checkpoint.period</name>
+     <value>3600</value>
+   </property >
+   ```
+
+2. 一分钟检查一次操作次数，当操作次数达到1百万时，SecondaryNameNode执行一次。
+
+   ```xml
+   <property>
+     <name>dfs.namenode.checkpoint.txns</name>
+     <value>1000000</value>
+   <description>操作动作次数</description>
+   </property>
+   
+   <property>
+     <name>dfs.namenode.checkpoint.check.period</name>
+     <value>60</value>
+   <description> 1分钟检查一次操作次数</description>
+   </property >
+   ```
+
+
+
+# 第六章 DataNode
+
+## 6.1 DataNode 工作机制
+
+![img](img/20180513223904745)
+
+1. 一个数据块在 datanode 上以文件形式存储在磁盘上，包括两个文件，一个是数据本身，一个是元数据包括数据块的长度，块数据的校验和，以及时间戳。
+
+2. DataNode 启动后向 namenode 注册， 通过后，周期性（6小时） 的向 namenode 上报所有的块信息。
+
+   ![image-20220114152438280](img/image-20220114152438280.png)
+
+3. 心跳是每 3 秒一次，心跳返回结果带有 namenode 给该 datanode 的命令如复制块数据到另一台机器，或删除某个数据块。 如果超过 10 分钟没有收到某个 datanode 的心跳，则认为该节点不可用。
+
+4. 集群运行中可以安全加入和退出一些机器。
+   
+
+## 6.2 数据完整性
+
+1. 当DataNode读取block的时候，它会计算checksum校验和
+
+2. 如果计算后的checksum，与block创建时值不一样，说明block已经损坏。
+
+3. client读取其他DataNode上的block.
+
+4. 常见的校验算法crc(32),md5(128),shal(160)
+
+5. datanode在其文件创建后周期验证checksum校验和
+   
+
+![img](img/20180513224153225)
+
+## 6.3 掉线时限参数设置
+
+1、DataNode进程死亡或者网络故障造成DataNode无法与NameNode通信;
+2、NameNode不会立即把该节点判定为死亡，要经过一段时间，这段时间暂称作超时时长;
+3、HDFS默认的超时时长为10分钟+30秒;
+4、如果定义超时时间为TimeOut，则超时时长的计算公式为：
+
+```shell
+TimeOut = 2 * dfs.namenode.heartbeat.recheck-interval + 10 * dfs.heartbeat.interval
+```
+
+而默认的dfs.namenode.heartbeat.recheck-interval 大小为5分钟，dfs.heartbeat.interval默认为3秒。需要注意的是 hdfs-site.xml 配置文件中的heartbeat.recheck.interval 的单位为**毫秒**，dfs.heartbeat.interval 的单位为**秒**。
+
+```xml
+<property>
+ <name>dfs.namenode.heartbeat.recheck-interval</name>
+ <value>300000</value>
+</property>
+<property>
+ <name>dfs.heartbeat.interval</name>
+ <value>3</value>
+</property>
+
+```
+
+
+
+# 总结
+
+1. HDFS文件块大小
+   - 硬盘读写速度
+   - 在企业中 一般128m（中小公司） 256m（大公司）
+2. HDFS的Shell操作（开发重点）
+3. HDFS的读写流程
