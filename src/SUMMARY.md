@@ -8,6 +8,7 @@
   - [Hadoop](./bigData/Hadoop/hadoopabout.md)
     - [三种模式及搭建环境](./bigData/Hadoop/typeandbuild.md)
     - [HDFS](./bigData/Hadoop/HDFS.md)
+    - [MapReduce](./bigData/Hadoop/MapReduce.md)
     - [问题](./bigData/Hadoop/question.md)
     - [面试](./bigData/Hadoop/facetest.md)
 

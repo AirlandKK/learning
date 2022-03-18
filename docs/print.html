@@ -84,7 +84,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="algorithm/about.html"><strong aria-hidden="true">1.</strong> 数据结构与算法</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="algorithm/inear_structure/algorithmAbout.html"><strong aria-hidden="true">1.1.</strong> 线性结构</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="algorithm/inear_structure/list.html"><strong aria-hidden="true">1.1.1.</strong> 线性结构</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="bigData/about.html"><strong aria-hidden="true">2.</strong> 大数据</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="bigData/linux/aboutlinux.html"><strong aria-hidden="true">2.1.</strong> Linux</a></li><li class="chapter-item expanded "><a href="bigData/Hadoop/hadoopabout.html"><strong aria-hidden="true">2.2.</strong> Hadoop</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="bigData/Hadoop/typeandbuild.html"><strong aria-hidden="true">2.2.1.</strong> 三种模式及搭建环境</a></li><li class="chapter-item expanded "><a href="bigData/Hadoop/HDFS.html"><strong aria-hidden="true">2.2.2.</strong> HDFS</a></li><li class="chapter-item expanded "><a href="bigData/Hadoop/question.html"><strong aria-hidden="true">2.2.3.</strong> 问题</a></li><li class="chapter-item expanded "><a href="bigData/Hadoop/facetest.html"><strong aria-hidden="true">2.2.4.</strong> 面试</a></li></ol></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="algorithm/about.html"><strong aria-hidden="true">1.</strong> 数据结构与算法</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="algorithm/inear_structure/algorithmAbout.html"><strong aria-hidden="true">1.1.</strong> 线性结构</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="algorithm/inear_structure/list.html"><strong aria-hidden="true">1.1.1.</strong> 线性结构</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="bigData/about.html"><strong aria-hidden="true">2.</strong> 大数据</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="bigData/linux/aboutlinux.html"><strong aria-hidden="true">2.1.</strong> Linux</a></li><li class="chapter-item expanded "><a href="bigData/Hadoop/hadoopabout.html"><strong aria-hidden="true">2.2.</strong> Hadoop</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="bigData/Hadoop/typeandbuild.html"><strong aria-hidden="true">2.2.1.</strong> 三种模式及搭建环境</a></li><li class="chapter-item expanded "><a href="bigData/Hadoop/HDFS.html"><strong aria-hidden="true">2.2.2.</strong> HDFS</a></li><li class="chapter-item expanded "><a href="bigData/Hadoop/MapReduce.html"><strong aria-hidden="true">2.2.3.</strong> MapReduce</a></li><li class="chapter-item expanded "><a href="bigData/Hadoop/question.html"><strong aria-hidden="true">2.2.4.</strong> 问题</a></li><li class="chapter-item expanded "><a href="bigData/Hadoop/facetest.html"><strong aria-hidden="true">2.2.5.</strong> 面试</a></li></ol></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -1238,6 +1238,147 @@ oev               apply the offline edits viewer to an edits file
 <li>HDFS的Shell操作（开发重点）</li>
 <li>HDFS的读写流程</li>
 </ol>
+<div style="break-before: page; page-break-before: always;"></div><p>[toc]</p>
+<h1 id="第一章-mapreduce概述"><a class="header" href="#第一章-mapreduce概述">第一章 MapReduce概述</a></h1>
+<h2 id="11-mapreduce-定义"><a class="header" href="#11-mapreduce-定义">1.1 MapReduce 定义</a></h2>
+<p>​	MapReduce是一个<strong>分布式运算程序</strong>的编程框架，是用户开发“基于Hadoop的数据分析应用“的核心框架。</p>
+<p>​	MapReduce核心功能是将<strong>用户编写的业务逻辑代码</strong>和<strong>自带默认组件</strong>整合成一个完整的<strong>分布式运算程序</strong>，并发运行在一个Hadoop集群上。</p>
+<h2 id="12-mapreduce-优缺点"><a class="header" href="#12-mapreduce-优缺点">1.2 MapReduce 优缺点</a></h2>
+<h3 id="121-优点"><a class="header" href="#121-优点">1.2.1 优点</a></h3>
+<ol>
+<li>MapReduce 易于编程 。用户只关心，业务逻辑。实现框架接口。</li>
+<li>良好的扩展性：可以动态增加服务器，解决计算资源不够的问题。</li>
+<li>高容错性。任何一台机器挂掉，可以将任务转移到其他节点。</li>
+<li>适合海量数据计算（TB/PB）几千台服务器共同计算。</li>
+</ol>
+<h3 id="122-缺点"><a class="header" href="#122-缺点">1.2.2 缺点</a></h3>
+<ol>
+<li>不擅长实时计算。Mysql</li>
+<li>不擅长流式计算。sark flink</li>
+<li>不擅长DAG有向无环图计算。spark -rdd 迭代时计算</li>
+</ol>
+<h1 id="13-mapreduce-核心思想"><a class="header" href="#13-mapreduce-核心思想">1.3 MapReduce 核心思想</a></h1>
+<ol>
+<li>MapReduce运算程序一般需要分为2个阶段：Map阶段和Reduce阶段</li>
+<li>Map阶段的并发MapTask，完全并行运行，互不相干
+<ul>
+<li>读数据，并按行处理</li>
+<li>按空格切分行内单词</li>
+<li>KV键值对（单词，1）</li>
+<li>将所有的KV键值对中的单词，按照单词首字母，分成2个分区溢写到磁盘</li>
+</ul>
+</li>
+<li>Reduce阶段的并发ReduceTask，完全互不相干，但是他们的数据依赖于上一个阶段的所有MapTask并发实例的输出
+<ul>
+<li>统计map阶段分组好的单词，输出数据（输出结果到文件）</li>
+</ul>
+</li>
+<li>MapReduce编程模型只能包含一个Map阶段和一个Reduce阶段，如果用户的业务逻辑非常复杂，那就只能多个MapReduce程序，串行运行。</li>
+</ol>
+<p><strong>若干问题细节</strong></p>
+<ol>
+<li>MapTask如何工作</li>
+<li>ReduceTask如何工作</li>
+<li>MapTask如何控制分区、排序等</li>
+<li>MapTask和ReduceTask之间如何衔接</li>
+</ol>
+<h1 id="14-mapreduce进程"><a class="header" href="#14-mapreduce进程">1.4 MapReduce进程</a></h1>
+<p>一个完整的MapReduce程序在分布式运行时有三类实例进程：</p>
+<ol>
+<li><strong>MrAppMaster</strong>（任务、job、mr）：负责整个程序的过程调度及状态协调。</li>
+<li><strong>MapTask</strong>(查不到，因为叫yarnchild)：负责Map阶段的整个数据处理流程。</li>
+<li><strong>ReduceTask</strong>(查不到，因为叫yarnchild)：负责Reduce阶段的整个数据处理流程。</li>
+</ol>
+<h1 id="15-官方wordcount源码"><a class="header" href="#15-官方wordcount源码">1.5 官方WordCount源码</a></h1>
+<p>https://github.com/apache/hadoop</p>
+<p>查看wordcount方法</p>
+<p>https://github1s.com/apache/hadoop/blob/66b72406bd8bed28ca32c75e07fc2b682500e92b/hadoop-mapreduce-project/hadoop-mapreduce-examples/src/main/java/org/apache/hadoop/examples/WordCount.java</p>
+<h1 id="16-常用数据序列化类型"><a class="header" href="#16-常用数据序列化类型">1.6 常用数据序列化类型</a></h1>
+<p><img src="bigData/Hadoop/img/image-20220316145443719.png" alt="image-20220316145443719" /></p>
+<h1 id="17-编程规范"><a class="header" href="#17-编程规范">1.7 编程规范</a></h1>
+<p>用户编写的程序分为三个部分：Mapper、Reducer和Driver</p>
+<h2 id="1-mapper阶段"><a class="header" href="#1-mapper阶段">1. Mapper阶段</a></h2>
+<ol>
+<li>
+<p>用户自定义的Mapper要继承自己的父类</p>
+</li>
+<li>
+<p>Mapper的输入是KV对的形式（KV的类型可自定义）</p>
+</li>
+<li>
+<p>Mapper中的业务逻辑卸载map()方法汇总</p>
+</li>
+<li>
+<p>Mapper的输出数据是KV对的形式（KV的类型可自定义）</p>
+</li>
+<li>
+<p><strong>map（）方法（MapTask进程）对每一个&lt;k,v&gt;调用一次</strong></p>
+<p><img src="bigData/Hadoop/img/image-20220316145748544.png" alt="image-20220316145748544" /></p>
+</li>
+</ol>
+<h2 id="2reducer阶段"><a class="header" href="#2reducer阶段">2.Reducer阶段</a></h2>
+<ol>
+<li>
+<p>用户自定义的Reducer要继承自己的父类</p>
+</li>
+<li>
+<p>Reducer的输入数据类型对应Mapper的输出数据类型，也是KV</p>
+</li>
+<li>
+<p>Reducer的业务逻辑卸载reduce()方法中</p>
+</li>
+<li>
+<p>ReduceTask进程对<strong>每一组相同k</strong>的&lt;k,v&gt;组调用一次reduce()方法</p>
+<p><img src="bigData/Hadoop/img/image-20220316150334053.png" alt="image-20220316150334053" /></p>
+</li>
+</ol>
+<h2 id="3-driver阶段"><a class="header" href="#3-driver阶段">3. Driver阶段</a></h2>
+<p>相当于YARN集群的客户端，封装了MapReducer相关运行参数的job对象</p>
+<p><img src="bigData/Hadoop/img/image-20220316152319674.png" alt="image-20220316152319674" /></p>
+<h1 id="代码阶段"><a class="header" href="#代码阶段">代码阶段</a></h1>
+<p><img src="bigData/Hadoop/img/image-20220316152039661.png" alt="image-20220316152039661" /></p>
+<pre><code class="language-xml">    &lt;build&gt;
+        &lt;plugins&gt;
+            &lt;!-- 配置当前项目的jdk版本信息 --&gt;
+            &lt;plugin&gt;
+                &lt;!-- 不包含其他依赖的打包，所以很小 --&gt;
+                &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+                &lt;artifactId&gt;maven-compiler-plugin&lt;/artifactId&gt;
+                &lt;version&gt;3.8.1&lt;/version&gt;
+                &lt;configuration&gt;
+                    &lt;source&gt;11&lt;/source&gt;
+                    &lt;target&gt;11&lt;/target&gt;
+                    &lt;encoding&gt;UTF-8&lt;/encoding&gt;
+                &lt;/configuration&gt;
+            &lt;/plugin&gt;
+            &lt;plugin&gt;
+                 &lt;!-- 包含其他依赖的打包 --&gt;
+                &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+                &lt;artifactId&gt;maven-assembly-plugin&lt;/artifactId&gt;
+                &lt;version&gt;3.3.0&lt;/version&gt;
+                &lt;configuration&gt;
+                    &lt;!-- 配置描述符文件 --&gt;
+                    &lt;!--                    &lt;descriptor&gt;src/main/assembly/assembly.xml&lt;/descriptor&gt;--&gt;
+                    &lt;!-- 也可以使用Maven预配置的描述符--&gt;
+                    &lt;descriptorRefs&gt;
+                        &lt;descriptorRef&gt;jar-with-dependencies&lt;/descriptorRef&gt;
+                    &lt;/descriptorRefs&gt;
+                &lt;/configuration&gt;
+                &lt;executions&gt;
+                    &lt;execution&gt;
+                        &lt;id&gt;make-assembly&lt;/id&gt;
+                        &lt;!-- 绑定到package生命周期 --&gt;
+                        &lt;phase&gt;package&lt;/phase&gt;
+                        &lt;goals&gt;
+                            &lt;!-- 只运行一次 --&gt;
+                            &lt;goal&gt;single&lt;/goal&gt;
+                        &lt;/goals&gt;
+                    &lt;/execution&gt;
+                &lt;/executions&gt;
+            &lt;/plugin&gt;
+        &lt;/plugins&gt;
+    &lt;/build&gt;
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h4 id="1用公司电脑ssh服务器突然连接不上了之前可以"><a class="header" href="#1用公司电脑ssh服务器突然连接不上了之前可以">1.用公司电脑ssh服务器，突然连接不上了（之前可以）</a></h4>
 <img src="bigData/Hadoop/img/image-20211229153341947.png" alt="image-20211229153341947" style="zoom:50%;" />
 <p>ssh -v root@110.42.160.28 ,报错信息如下</p>
