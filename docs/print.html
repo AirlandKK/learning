@@ -1379,6 +1379,62 @@ oev               apply the offline edits viewer to an edits file
         &lt;/plugins&gt;
     &lt;/build&gt;
 </code></pre>
+<h1 id="第2章-hadoop的序列化"><a class="header" href="#第2章-hadoop的序列化">第2章 Hadoop的序列化</a></h1>
+<h2 id="21-序列化概述"><a class="header" href="#21-序列化概述">2.1 序列化概述</a></h2>
+<ol>
+<li>结构紧凑：存储空间少</li>
+<li>传输快速</li>
+<li>互操作性：支持多语言的使用</li>
+</ol>
+<h2 id="22-自定义bean对象实现序列化接口writable"><a class="header" href="#22-自定义bean对象实现序列化接口writable">2.2 自定义bean对象实现序列化接口（Writable）</a></h2>
+<p>具体实现bean对象序列化步骤如下7步。</p>
+<p>（1）必须实现Writable接口</p>
+<p>（2）反序列化时，需要反射调用空参构造函数，所以必须有空参构造</p>
+<pre><code class="language-java">public FlowBean() {
+
+   super();
+
+}
+</code></pre>
+<p>（3）重写序列化方法</p>
+<pre><code class="language-java">@Override
+
+public void write(DataOutput out) throws IOException {
+
+   out.writeLong(upFlow);
+
+   out.writeLong(downFlow);
+
+   out.writeLong(sumFlow);
+
+}
+</code></pre>
+<p>（4）重写反序列化方法</p>
+<pre><code class="language-java">@Override
+
+public void readFields(DataInput in) throws IOException {
+
+   upFlow = in.readLong();
+
+   downFlow = in.readLong();
+
+   sumFlow = in.readLong();
+
+}
+</code></pre>
+<p><strong>（5）注意反序列化的顺序和序列化的顺序完全一致</strong></p>
+<p>（6）要想把结果显示在文件中，需要重写toString()，可用”\t”分开，方便后续用。</p>
+<p>（7）如果需要将自定义的bean放在key中传输，则还需要实现Comparable接口，因为MapReduce框中的Shuffle过程要求对key必须能排序。</p>
+<pre><code class="language-java">@Override
+
+public int compareTo(FlowBean o) {
+
+   // 倒序排列，从大到小
+
+   return this.sumFlow &gt; o.getSumFlow() ? -1 : 1;
+
+}
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h4 id="1用公司电脑ssh服务器突然连接不上了之前可以"><a class="header" href="#1用公司电脑ssh服务器突然连接不上了之前可以">1.用公司电脑ssh服务器，突然连接不上了（之前可以）</a></h4>
 <img src="bigData/Hadoop/img/image-20211229153341947.png" alt="image-20211229153341947" style="zoom:50%;" />
 <p>ssh -v root@110.42.160.28 ,报错信息如下</p>
